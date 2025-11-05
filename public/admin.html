@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Admin</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #form { display:none; }
+  </style>
+</head>
+<body>
+
+<h2>Panel de carga</h2>
+
+<div id="login">
+  <p>Contraseña:</p>
+  <input type="password" id="pass">
+  <button onclick="login()">Ingresar</button>
+</div>
+
+<div id="form">
+  <p>Nombre del producto</p>
+  <input type="text" id="nombre">
+
+  <p>Precio</p>
+  <input type="number" id="precio">
+
+  <p>Imagen</p>
+  <input type="file" id="imagen">
+
+  <br><br>
+  <button onclick="guardarProducto()">Guardar Producto</button>
+</div>
+
+<script type="module">
+  import { db, storage } from "./firebase.js";
+  import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+  import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
+
+  const PASS = "BrondoCargaProductos";
+
+  window.login = function(){
+    if(document.getElementById("pass").value === PASS){
+      document.getElementById("login").style.display="none";
+      document.getElementById("form").style.display="block";
+    } else {
+      alert("Contraseña incorrecta");
+    }
+  }
+
+  window.guardarProducto = async function(){
+    const nombre = document.getElementById("nombre").value;
+    const precio = document.getElementById("precio").value;
+    const imagen = document.getElementById("imagen").files[0];
+
+    if(!nombre || !precio || !imagen) return alert("Completa todo");
+
+    // SUBIR IMAGEN
+    const imgRef = ref(storage, "productos/" + imagen.name);
+    await uploadBytes(imgRef, imagen);
+    const url = await getDownloadURL(imgRef);
+
+    // GUARDAR DOCUMENTO
+    await addDoc(collection(db, "productos"), {
+      nombre,
+      precio: Number(precio),
+      imagen: url
+    });
+
+    alert("Producto guardado!");
+  }
+</script>
+</body>
+</html>
