@@ -6,7 +6,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyBbTgPwzoyB4jMWmev1adZm78699fuf0uc",
   authDomain: "web-brondo.firebaseapp.com",
   projectId: "web-brondo",
-  storageBucket: "web-brondo.firebasestorage.app",
+  storageBucket: "web-brondo.appspot.com",
   messagingSenderId: "404206887647",
   appId: "1:404206887647:web:79bd574db778616bf0ff6a",
   measurementId: "G-YY5ZWDFDFE"
