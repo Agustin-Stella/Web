@@ -28,12 +28,27 @@ async function cargarProductos(filtro = '') {
     const snapshot = await getDocs(productosCol);
     console.log('Firestore snapshot obtenido, docs count =', snapshot.size);
     const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-    console.log('Productos crudos desde Firestore:', data);
+    console.log('Productos crudos desde Firestore:', JSON.stringify(data, null, 2));
+    
+    // Debug: mostrar campos específicos
+    data.forEach(prod => {
+      console.log(`Producto "${prod.nombre}":`);
+      console.log('- URL imagen:', prod.imagen);
+      console.log('- Precio:', prod.precio);
+      console.log('- ID:', prod.id);
+    });
 
     // Filtrado simple en el cliente (case-insensitive)
     const filtered = filtro
       ? data.filter(p => p.nombre && p.nombre.toLowerCase().includes(filtro.toLowerCase()))
       : data;
+
+    console.log('Filtrando productos:', filtered.map(p => ({
+      id: p.id,
+      nombre: p.nombre,
+      imagen: p.imagen,
+      imagen_url: p.imagen_url
+    })));
 
     if (!contenedor) return;
 
@@ -47,8 +62,10 @@ async function cargarProductos(filtro = '') {
     filtered.forEach(prod => {
       const card = document.createElement('div');
       card.className = 'producto';
+      const imagenUrl = prod.imagen || prod.imagen_url || '';
+      console.log(`Creando card para ${prod.nombre}, URL imagen:`, imagenUrl);
       card.innerHTML = `
-        <img src="${prod.imagen || prod.imagen_url || ''}" alt="${prod.nombre || ''}">
+        <img src="${imagenUrl}" alt="${prod.nombre || ''}" onerror="this.style.display='none'" onload="this.style.display='block'">
         <h2>${prod.nombre || ''}</h2>
         <p class="precio">$${prod.precio ?? ''}</p>
         <p class="descripcion">${prod.descripcion || ''}</p>
@@ -61,7 +78,7 @@ async function cargarProductos(filtro = '') {
   }
 }
 
-// 🔍 Buscar mientras se escribe (si existe el input)
+// Buscar mientras se escribe (si existe el input)
 if (inputSearch) {
   inputSearch.addEventListener('input', e => {
     const filtro = e.target.value;
