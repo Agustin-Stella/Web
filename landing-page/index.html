@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mayorista de Limpieza VP</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="logo.png" alt="Mayorista VP" id="logoImg">
+                </div>
+                <nav class="nav">
+                    <a href="#ofertas" class="nav-link" data-page="ofertas">Ofertas</a>
+                    <div class="nav-dropdown">
+                        <a href="#" class="nav-link" id="categoriasBtn">Categorías</a>
+                        <div class="dropdown-menu" id="categoriasMenu">
+                            <div class="dropdown-columns">
+                                <div class="dropdown-column">
+                                    <a href="#" class="dropdown-item" data-category="aromatizantes-ambiente">AROMATIZANTES-AMBIENTE</a>
+                                    <a href="#" class="dropdown-item" data-category="aromatizantes-automotor">AROMATIZANTES-AUTOMOTOR</a>
+                                    <a href="#" class="dropdown-item" data-category="aromatizantes-textil">AROMATIZANTES-TEXTIL</a>
+                                    <a href="#" class="dropdown-item" data-category="automotor">AUTOMOTOR</a>
+                                    <a href="#" class="dropdown-item" data-category="baldes">BALDES</a>
+                                    <a href="#" class="dropdown-item" data-category="baño">BAÑO</a>
+                                    <a href="#" class="dropdown-item" data-category="bazar">BAZAR</a>
+                                    <a href="#" class="dropdown-item" data-category="bolsas">BOLSAS</a>
+                                    <a href="#" class="dropdown-item" data-category="broches">BROCHES</a>
+                                    <a href="#" class="dropdown-item" data-category="cabos">CABOS</a>
+                                    <a href="#" class="dropdown-item" data-category="cepilleria">CEPILLERIA</a>
+                                    <a href="#" class="dropdown-item" data-category="cesto">CESTO</a>
+                                    <a href="#" class="dropdown-item" data-category="cestos">CESTOS</a>
+                                    <a href="#" class="dropdown-item" data-category="contenedores">CONTENEDORES</a>
+                                    <a href="#" class="dropdown-item" data-category="escobillones">ESCOBILLONES</a>
+                                </div>
+                                <div class="dropdown-column">
+                                    <a href="#" class="dropdown-item" data-category="esponja">ESPONJA</a>
+                                    <a href="#" class="dropdown-item" data-category="esponjas">ESPONJAS</a>
+                                    <a href="#" class="dropdown-item" data-category="fuentones">FUENTONES</a>
+                                    <a href="#" class="dropdown-item" data-category="gatillos">GATILLOS</a>
+                                    <a href="#" class="dropdown-item" data-category="guantes">GUANTES</a>
+                                    <a href="#" class="dropdown-item" data-category="jabon-lavar">JABON DE LAVAR</a>
+                                    <a href="#" class="dropdown-item" data-category="jardineria">JARDINERIA</a>
+                                    <a href="#" class="dropdown-item" data-category="lampazo">LAMPAZO</a>
+                                    <a href="#" class="dropdown-item" data-category="lampazos-varios">LAMPAZOS VARIOS</a>
+                                    <a href="#" class="dropdown-item" data-category="lavavajilla">LAVAVAJILLA</a>
+                                    <a href="#" class="dropdown-item" data-category="limpiador">LIMPIADOR</a>
+                                    <a href="#" class="dropdown-item" data-category="mangueras">MANGUERAS</a>
+                                    <a href="#" class="dropdown-item" data-category="mopa">MOPA</a>
+                                    <a href="#" class="dropdown-item" data-category="organizador">ORGANIZADOR</a>
+                                    <a href="#" class="dropdown-item" data-category="palas">PALAS</a>
+                                </div>
+                                <div class="dropdown-column">
+                                    <a href="#" class="dropdown-item" data-category="papel">PAPEL</a>
+                                    <a href="#" class="dropdown-item" data-category="paño">PAÑO</a>
+                                    <a href="#" class="dropdown-item" data-category="perchas">PERCHAS</a>
+                                    <a href="#" class="dropdown-item" data-category="perfumeria">PERFUMERIA</a>
+                                    <a href="#" class="dropdown-item" data-category="pileta">PILETA</a>
+                                    <a href="#" class="dropdown-item" data-category="plumeros">PLUMEROS</a>
+                                    <a href="#" class="dropdown-item" data-category="quitamancha">QUITAMANCHA</a>
+                                    <a href="#" class="dropdown-item" data-category="repasador">REPASADOR</a>
+                                    <a href="#" class="dropdown-item" data-category="sahumerios">SAHUMERIOS</a>
+                                    <a href="#" class="dropdown-item" data-category="secador">SECADOR</a>
+                                    <a href="#" class="dropdown-item" data-category="secadores">SECADORES</a>
+                                    <a href="#" class="dropdown-item" data-category="suavizantes">SUAVIZANTES</a>
+                                    <a href="#" class="dropdown-item" data-category="tender">TENDER</a>
+                                    <a href="#" class="dropdown-item" data-category="textil">TEXTIL</a>
+                                    <a href="#" class="dropdown-item" data-category="trapo">TRAPO</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#nosotros" class="nav-link" data-page="nosotros">Nosotros</a>
+                </nav>
+                <div class="header-icons">
+                    <div class="icon-wrapper">
+                        <svg class="icon" id="wishlistIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="badge" id="wishlistBadge">0</span>
+                    </div>
+                    <div class="icon-wrapper">
+                        <svg class="icon" id="cartIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 2L6.5 6M9 2h6m-6 0L6.5 6m8.5-4l2.5 4M6.5 6h11M6.5 6L5 21h14l-1.5-15"></path>
+                        </svg>
+                        <span class="badge" id="cartBadge">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Página de Ofertas -->
+        <section class="page ofertas-page" id="page-ofertas" style="display: none;">
+            <div class="container">
+                <h1 class="page-title">OFERTAS DIARIAS!</h1>
+                <div class="products-grid" id="ofertasGrid"></div>
+            </div>
+        </section>
+
+        <!-- Página de Catálogo -->
+        <section class="page catalog-page" id="page-catalog" style="display: block;">
+            <div class="container">
+                <div class="catalog-layout">
+                    <!-- Sidebar -->
+                    <aside class="sidebar">
+                        <div class="search-box">
+                            <input type="text" placeholder="Buscar producto..." id="searchInput">
+                            <button id="searchBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="filter-section">
+                            <h3>Rubros</h3>
+                            <select id="categoryFilter">
+                                <option value="">Todas los rubros</option>
+                            </select>
+                        </div>
+                    </aside>
+
+                    <!-- Products Area -->
+                    <div class="products-area">
+                        <div class="products-toolbar">
+                            <select id="sortSelect">
+                                <option value="default">Orden Por defecto</option>
+                                <option value="price-asc">Precio - Más barato al más caro</option>
+                                <option value="price-desc">Precio - Más caro al más barato</option>
+                            </select>
+                            <div class="products-count">
+                                <span id="productsCount">Mostrando 15 de 71 productos</span>
+                            </div>
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="grid">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <rect x="3" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="3" width="7" height="7"></rect>
+                                        <rect x="3" y="14" width="7" height="7"></rect>
+                                        <rect x="14" y="14" width="7" height="7"></rect>
+                                    </svg>
+                                </button>
+                                <button class="view-btn" data-view="list">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="products-grid" id="catalogGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página de Nosotros -->
+        <section class="page nosotros-page" id="page-nosotros" style="display: none;">
+            <div class="container">
+                <div class="nosotros-header">
+                    <p class="nosotros-subtitle">Nosotros Somos</p>
+                    <h1 class="nosotros-title">Mayorista de Limpieza VP</h1>
+                    <p class="nosotros-description">Comercializamos de forma mayorista todas las lineas de productos de Limpieza.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Envíos a todo el país</h3>
+                        <p>Comprá desde casa</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Stock permanente</h3>
+                        <p>Gran variedad de productos</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Todos los medios de pago</h3>
+                        <p>Efectivo, tarjeta, mercadopago</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Sitio seguro</h3>
+                        <p>Protegemos tus datos</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página de Lista de Deseos -->
+        <section class="page wishlist-page" id="page-wishlist" style="display: none;">
+            <div class="container">
+                <h1 class="page-title">Lista de deseos</h1>
+                <div class="wishlist-content">
+                    <div class="empty-state" id="emptyWishlist">
+                        <p>Lista de deseos vacía</p>
+                        <button class="btn-secondary" onclick="navigateTo('catalog')">Agregar productos</button>
+                    </div>
+                    <div class="wishlist-table" id="wishlistTable" style="display: none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>IMAGEN</th>
+                                    <th>PRODUCTO</th>
+                                    <th>PRECIO UNITARIO</th>
+                                    <th>AGREGAR</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="wishlistBody"></tbody>
+                        </table>
+                        <div class="wishlist-actions">
+                            <button class="btn-secondary" onclick="navigateTo('catalog')">CONTINUAR COMPRANDO</button>
+                            <button class="btn-secondary" onclick="clearWishlist()">LIMPIAR LISTA DE DESEOS</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página de Carrito -->
+        <section class="page cart-page" id="page-cart" style="display: none;">
+            <div class="container">
+                <h1 class="page-title">Carrito de Compras</h1>
+                <div class="cart-content">
+                    <div class="empty-state" id="emptyCart">
+                        <p>El carrito está vacío</p>
+                        <button class="btn-secondary" onclick="navigateTo('catalog')">Hacer compras</button>
+                    </div>
+                    <div class="cart-table" id="cartTable" style="display: none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>IMAGEN</th>
+                                    <th>PRODUCTO</th>
+                                    <th>PRECIO UNITARIO</th>
+                                    <th>CANT.</th>
+                                    <th>SUBTOTAL</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartBody"></tbody>
+                        </table>
+                        <div class="cart-total">
+                            <h3>Total: <span id="cartTotal">$0,00</span></h3>
+                        </div>
+                        <div class="cart-actions">
+                            <button class="btn-secondary" onclick="navigateTo('catalog')">CONTINUAR COMPRANDO</button>
+                            <button class="btn-primary" onclick="navigateTo('checkout')">HACER PEDIDO</button>
+                            <button class="btn-secondary" onclick="clearCart()">VACIAR CARRITO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Página de Checkout -->
+        <section class="page checkout-page" id="page-checkout" style="display: none;">
+            <div class="container">
+                <div class="checkout-layout">
+                    <div class="checkout-form">
+                        <h2>Detalles del pedido</h2>
+                        <form id="checkoutForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nombre</label>
+                                    <input type="text" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Apellido</label>
+                                    <input type="text" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Dirección</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Ciudad</label>
+                                <input type="text" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Teléfono</label>
+                                    <input type="tel" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Nombre del Vendedor</label>
+                                <select required>
+                                    <option value="">Seleccionar Vendedor</option>
+                                    <option value="vendedor1">Vendedor 1</option>
+                                    <option value="vendedor2">Vendedor 2</option>
+                                    <option value="vendedor3">Vendedor 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="label-red">información Adicional</label>
+                                <textarea placeholder="Notas sobre tu pedido, e.g. notas especiales para la entrega."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="checkout-summary">
+                        <h2>Tu pedido</h2>
+                        <div class="order-items" id="orderItems"></div>
+                        <div class="order-total">
+                            <strong>Total</strong>
+                            <strong class="total-amount" id="orderTotal">$0,00</strong>
+                        </div>
+                        <button class="btn-primary btn-full" onclick="submitOrder()">REALIZAR PEDIDO</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Banner Section (aparece en varias páginas) -->
+    <section class="banner-section" id="bannerSection">
+        <div class="container">
+            <div class="banner-content">
+                <div class="banner-logo">
+                    <img src="logo.png" alt="Mayorista VP">
+                </div>
+                <div class="banner-features">
+                    <div class="banner-feature">
+                        <h3>Envíos a todo el país</h3>
+                        <p>Comprá desde casa</p>
+                    </div>
+                    <div class="banner-feature">
+                        <h3>Stock permanente</h3>
+                        <p>Gran variedad de productos</p>
+                    </div>
+                    <div class="banner-feature">
+                        <h3>Todos los medios de pago</h3>
+                        <p>Efectivo, tarjeta, mercadopago</p>
+                    </div>
+                    <div class="banner-feature">
+                        <h3>Sitio seguro</h3>
+                        <p>Protegemos tus datos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="logo.png" alt="Mayorista VP">
+                </div>
+                <div class="footer-info">
+                    <h3>Sobre nosotros</h3>
+                    <a href="#nosotros" onclick="navigateTo('nosotros')">Nosotros</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Mayorista de Limpieza VP .</p>
+                <p>Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTopBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+        </svg>
+    </button>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modalImage" src="" alt="">
+                    <div class="modal-thumbnails" id="modalThumbnails"></div>
+                </div>
+                <div class="modal-info">
+                    <p class="cart-status" id="modalCartStatus">El carrito está vacío</p>
+                    <h2 id="modalTitle"></h2>
+                    <p class="modal-price" id="modalPrice"></p>
+                    <div class="quantity-selector">
+                        <button onclick="decreaseQuantity()">-</button>
+                        <input type="number" id="modalQuantity" value="1" min="1">
+                        <button onclick="increaseQuantity()">+</button>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-primary" onclick="addToCartFromModal()">AGREGAR</button>
+                        <button class="btn-icon" onclick="toggleWishlistFromModal()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Dropdown -->
+    <div class="cart-dropdown" id="cartDropdown">
+        <div class="cart-dropdown-header">
+            <h3>Carrito</h3>
+            <button class="modal-close" onclick="closeCartDropdown()">&times;</button>
+        </div>
+        <div class="cart-dropdown-items" id="cartDropdownItems"></div>
+        <div class="cart-dropdown-total">
+            <strong>Total:</strong>
+            <strong id="cartDropdownTotal">$0,00</strong>
+        </div>
+        <button class="btn-primary btn-full" onclick="navigateTo('cart'); closeCartDropdown();">VER CARRITO</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
