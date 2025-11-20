@@ -77,9 +77,11 @@ body {
     margin-top: 10px;
 }
 
-.nav-dropdown:hover .dropdown-menu {
+/* Dropdown con JavaScript */
+.dropdown-menu.active {
     display: block;
 }
+
 
 .dropdown-columns {
     display: grid;
