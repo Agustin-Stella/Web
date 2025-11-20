@@ -4,264 +4,6 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="style-admin.css">
   <title>Panel Admin</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    #form, #gestion { display:none; }
-    
-    .auth-container {
-      max-width: 400px;
-      margin: 50px auto;
-      background: #fff3e0;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 15px rgba(167, 119, 6, 0.3);
-    }
-    
-    .auth-container h2 {
-      text-align: center;
-      color: #111;
-      margin-bottom: 20px;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      color: #a77706;
-      margin-bottom: 8px;
-    }
-    
-    .user-info {
-      background: #e9f237;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .user-info span {
-      font-weight: 600;
-      color: #111;
-    }
-    
-    .btn-logout {
-      background: #666;
-      padding: 8px 15px;
-      font-size: 12px;
-    }
-    
-    .btn-logout:hover {
-      background: #333;
-    }
-    
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #e9f237;
-    }
-    
-    .tab-btn {
-      padding: 10px 20px;
-      background: #fff3e0;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      border-radius: 5px 5px 0 0;
-      transition: all 0.3s;
-    }
-    
-    .tab-btn.active {
-      background: #e9f237;
-      color: #111;
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    .checkbox-group {
-      display: flex;
-      gap: 20px;
-      margin: 15px 0;
-      align-items: center;
-    }
-    
-    .checkbox-group label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      color: #a77706;
-    }
-    
-    .checkbox-group input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-    
-    #productosLista {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    
-    .producto-card {
-      background: #fff3e0;
-      border: 2px solid #e9f237;
-      border-radius: 10px;
-      padding: 15px;
-      box-shadow: 0 4px 8px rgba(167, 119, 6, 0.2);
-    }
-    
-    .producto-card.destacado {
-      border-color: #f6741c;
-      background: #fff8e1;
-    }
-    
-    .producto-card.oferta {
-      border-color: #ff3903;
-      background: #ffe8e1;
-    }
-    
-    .producto-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: contain;
-      background: white;
-      border-radius: 5px;
-      margin-bottom: 10px;
-    }
-    
-    .producto-card h3 {
-      font-size: 14px;
-      color: #111;
-      margin: 10px 0;
-      min-height: 40px;
-    }
-    
-    .producto-card .precio {
-      font-size: 18px;
-      font-weight: bold;
-      color: #a77706;
-      margin: 5px 0;
-    }
-    
-    .producto-card .badges {
-      display: flex;
-      gap: 5px;
-      margin: 10px 0;
-      flex-wrap: wrap;
-    }
-    
-    .badge {
-      padding: 3px 8px;
-      border-radius: 3px;
-      font-size: 11px;
-      font-weight: bold;
-      color: white;
-    }
-    
-    .badge.destacado {
-      background: #f6741c;
-    }
-    
-    .badge.oferta {
-      background: #ff3903;
-    }
-    
-    .producto-card button {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      font-size: 12px;
-      border-radius: 5px;
-    }
-    
-    .btn-destacar {
-      background: #f6741c;
-    }
-    
-    .btn-destacar:hover {
-      background: #f31400;
-    }
-    
-    .btn-quitar {
-      background: #666;
-    }
-    
-    .btn-quitar:hover {
-      background: #333;
-    }
-    
-    .btn-oferta {
-      background: #ff3903;
-    }
-    
-    .btn-oferta:hover {
-      background: #cc0000;
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 20px;
-      color: #a77706;
-    }
-    
-    select, input[type="text"], input[type="number"], input[type="password"], input[type="file"] {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      margin-bottom: 1.8rem;
-      border: 2px solid #e9f237;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-family: "Poppins", sans-serif;
-      color: #111;
-      background-color: #fffde7;
-    }
-    
-    select {
-      cursor: pointer;
-    }
-    
-    .error-message {
-      background: #ffebee;
-      color: #c62828;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      display: none;
-    }
-    
-    .info-box {
-      background: #e3f2fd;
-      border-left: 4px solid #2196f3;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 4px;
-      font-size: 13px;
-      color: #0d47a1;
-    }
-
-    .preview-image {
-      max-width: 200px;
-      margin-top: 10px;
-      border-radius: 8px;
-      display: none;
-    }
-  </style>
 </head>
 <body>
 
@@ -287,16 +29,12 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="cambiarTab('cargar')">Cargar Producto</button>
     <button class="tab-btn" onclick="cambiarTab('gestionar')">Gestionar Productos</button>
-    <button class="tab-btn" onclick="migrarProductos()" style="background: #ff9800;">Migrar Productos (usar 1 vez)</button>
   </div>
   
   <!-- TAB: CARGAR PRODUCTO -->
   <div id="tab-cargar" class="tab-content active">
     <div id="form">
-      <div class="info-box">
-        💡 <strong>Tip:</strong> Sube las imágenes a <a href="https://imgbb.com" target="_blank">ImgBB</a> o <a href="https://imgur.com" target="_blank">Imgur</a> y pega la URL aquí
-      </div>
-
+      
       <p>Nombre del producto</p>
       <input type="text" id="nombre">
 
@@ -398,7 +136,6 @@
     document.getElementById("login").style.display = "none";
     document.getElementById("gestion").style.display = "block";
     document.getElementById("form").style.display = "block";
-    // IMPORTANTE: Cargar productos al mostrar el panel
     cargarProductos();
   }
 
@@ -407,7 +144,6 @@
     document.getElementById("gestion").style.display = "none";
   }
 
-  // Login Simple con contraseña maestra
   window.loginSimple = function() {
     const password = document.getElementById("password").value;
     const errorDiv = document.getElementById("errorLogin");
@@ -431,7 +167,6 @@
     mostrarPanel();
   }
 
-  // Logout
   window.logout = function() {
     sessionStorage.removeItem('adminAuth');
     isAuthenticated = false;
@@ -439,7 +174,6 @@
     mostrarLogin();
   }
 
-  // Enter para login
   document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById("password");
     if(passwordInput) {
@@ -448,7 +182,6 @@
       });
     }
 
-    // Preview de imagen
     const imagenUrl = document.getElementById("imagenUrl");
     if(imagenUrl) {
       imagenUrl.addEventListener('input', (e) => {
@@ -498,7 +231,6 @@
     }
 
     try {
-      // GUARDAR DOCUMENTO - Asegurar que destacado y oferta sean booleanos
       await addDoc(collection(db, "productos"), {
         nombre,
         categoria: categoria || "SIN CATEGORÍA",
@@ -511,7 +243,6 @@
 
       alert("Producto guardado!");
       
-      // Limpiar formulario
       document.getElementById("nombre").value = "";
       document.getElementById("categoria").value = "";
       document.getElementById("precio").value = "";
