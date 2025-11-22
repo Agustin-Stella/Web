@@ -300,6 +300,33 @@ p {
   background: #ffb300;
 }
 
+.btn-editar {
+  background: #3498db;
+  color: white;
+}
+
+.btn-editar:hover {
+  background: #2980b9;
+}
+
+.btn-cancelar {
+  background: #e74c3c;
+  color: white;
+  margin-left: 10px;
+}
+
+.btn-cancelar:hover {
+  background: #c0392b;
+}
+
+#form-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
 .loading {
   text-align: center;
   padding: 40px;

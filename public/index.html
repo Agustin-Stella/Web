@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forrajeria Niki</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
     <!-- Header -->
@@ -12,7 +12,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <img src="logo1.jpg" alt="Forrajeria Niki" id="logoImg">
+                    <img src="assets/images/logo1.jpg" alt="Forrajeria Niki" id="logoImg">
                 </div>
                 <nav class="nav">
                     <a href="#ofertas" class="nav-link" data-page="ofertas">Ofertas</a>
@@ -102,8 +102,23 @@
                 
                 <!-- PRODUCTOS DESTACADOS ARRIBA -->
                 <h1 class="page-title">Productos Destacados</h1>
-                <div class="products-grid" id="landingGrid"></div>
-                
+                <div class="carousel-container">
+                    <button class="carousel-btn carousel-btn-prev" id="carouselPrev">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <div class="carousel-wrapper">
+                        <div class="carousel-track" id="landingGrid"></div>
+                    </div>
+                    <button class="carousel-btn carousel-btn-next" id="carouselNext">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="carousel-dots" id="carouselDots"></div>
+
                 <!-- SEPARACIÓN -->
                 <div style="height: 80px;"></div>
                 
@@ -336,7 +351,7 @@
         <div class="container">
             <div class="banner-content">
                 <div class="banner-logo">
-                    <img src="logo1.jpg" alt="Forrajeria Niki">
+                    <img src="assets/images/logo1.jpg" alt="Forrajeria Niki">
                 </div>
                 <div class="banner-features">
                     <div class="banner-feature">
@@ -365,7 +380,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-logo">
-                    <img src="logo1.jpg" alt="Forrajeria Niki">
+                    <img src="assets/images/logo1.jpg" alt="Forrajeria Niki">
                 </div>
                 <div class="footer-info">
                     <h3>Sobre nosotros</h3>
@@ -439,6 +454,6 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script type="module" src="script.js"></script>
+    <script type="module" src="assets/js/script.js"></script>
 </body>
 </html>
