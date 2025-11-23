@@ -738,6 +738,18 @@ function initCarousel() {
   const track = document.getElementById('landingGrid');
   if (!track) return;
 
+  // Detectar ancho de pantalla y ajustar itemsPerSlide
+  const width = window.innerWidth;
+  if (width <= 480) {
+    itemsPerSlide = 1;
+  } else if (width <= 768) {
+    itemsPerSlide = 2;
+  } else if (width <= 1200) {
+    itemsPerSlide = 3;
+  } else {
+    itemsPerSlide = 4;
+  }
+
   const cards = track.querySelectorAll('.product-card');
   totalSlides = Math.ceil(cards.length / itemsPerSlide);
 
