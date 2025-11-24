@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="style-admin.css">
+  <link rel="stylesheet" href="assets/css/style-admin.css">
   <title>Panel Admin</title>
 </head>
 <body>
@@ -34,7 +34,9 @@
   <!-- TAB: CARGAR PRODUCTO -->
   <div id="tab-cargar" class="tab-content active">
     <div id="form">
-      
+      <h3 id="form-title">Agregar Nuevo Producto</h3>
+      <input type="hidden" id="productoIdEditar" value="">
+
       <p>Nombre del producto</p>
       <input type="text" id="nombre">
 
@@ -106,7 +108,10 @@
         </label>
       </div>
 
-      <button onclick="guardarProducto()">Guardar Producto</button>
+      <div style="text-align: center;">
+        <button id="btnGuardar" onclick="guardarProducto()">Guardar Producto</button>
+        <button id="btnCancelar" class="btn-cancelar" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
+      </div>
     </div>
   </div>
   
@@ -118,7 +123,7 @@
 </div>
 
 <script type="module">
-  import { db } from "./firebase.js";
+  import { db } from "./assets/js/firebase.js";
   import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
   // 🔐 CONTRASEÑA MAESTRA 
@@ -214,7 +219,8 @@
       alert("Debes estar autenticado");
       return;
     }
-    
+
+    const productoId = document.getElementById("productoIdEditar").value;
     const nombre = document.getElementById("nombre").value;
     const categoria = document.getElementById("categoria").value;
     const precio = document.getElementById("precio").value;
@@ -231,26 +237,29 @@
     }
 
     try {
-      await addDoc(collection(db, "productos"), {
+      const productoData = {
         nombre,
         categoria: categoria || "SIN CATEGORÍA",
         precio: Number(precio),
         imagen: imagenUrl,
         destacado: destacado === true,
-        oferta: oferta === true,
-        fechaCreacion: new Date().toISOString()
-      });
+        oferta: oferta === true
+      };
 
-      alert("Producto guardado!");
-      
-      document.getElementById("nombre").value = "";
-      document.getElementById("categoria").value = "";
-      document.getElementById("precio").value = "";
-      document.getElementById("imagenUrl").value = "";
-      document.getElementById("previewImg").style.display = "none";
-      document.getElementById("destacado").checked = false;
-      document.getElementById("oferta").checked = false;
-      
+      if(productoId) {
+        // Modo edición - actualizar producto existente
+        const docRef = doc(db, "productos", productoId);
+        await updateDoc(docRef, productoData);
+        alert("Producto actualizado!");
+      } else {
+        // Modo agregar - crear nuevo producto
+        productoData.fechaCreacion = new Date().toISOString();
+        await addDoc(collection(db, "productos"), productoData);
+        alert("Producto guardado!");
+      }
+
+      // Limpiar formulario
+      cancelarEdicion();
       cargarProductos();
     } catch(error) {
       alert("Error al guardar: " + error.message);
@@ -316,6 +325,9 @@
           <button class="btn-oferta" onclick="toggleOferta('${producto.id}', ${!producto.oferta})">
             ${producto.oferta ? 'Quitar Oferta' : 'Marcar Oferta'}
           </button>
+          <button class="btn-editar" onclick="editarProducto('${producto.id}')">
+              Editar
+          </button>
           <button class="btn-quitar" onclick="eliminarProducto('${producto.id}', '${producto.nombre}')">
             Eliminar
           </button>
@@ -363,9 +375,9 @@
 
   window.eliminarProducto = async function(id, nombre) {
     if(!isAuthenticated) return alert("Debes estar autenticado");
-    
+
     if(!confirm(`¿Seguro que deseas eliminar "${nombre}"?`)) return;
-    
+
     try {
       await deleteDoc(doc(db, "productos", id));
       alert("Producto eliminado");
@@ -373,6 +385,54 @@
     } catch(error) {
       alert("Error al eliminar: " + error.message);
     }
+  }
+
+  window.editarProducto = function(id) {
+    if(!isAuthenticated) return alert("Debes estar autenticado");
+
+    const producto = productos.find(p => p.id === id);
+    if(!producto) return alert("Producto no encontrado");
+
+    // Llenar el formulario con los datos del producto
+    document.getElementById("productoIdEditar").value = id;
+    document.getElementById("nombre").value = producto.nombre || '';
+    document.getElementById("categoria").value = producto.categoria || '';
+    document.getElementById("precio").value = producto.precio || '';
+    document.getElementById("imagenUrl").value = producto.imagen || '';
+    document.getElementById("destacado").checked = producto.destacado === true;
+    document.getElementById("oferta").checked = producto.oferta === true;
+
+    // Mostrar preview de la imagen
+    const previewImg = document.getElementById("previewImg");
+    if(producto.imagen) {
+      previewImg.src = producto.imagen;
+      previewImg.style.display = 'block';
+    }
+
+    // Cambiar a modo edición
+    document.getElementById("form-title").textContent = "Editar Producto";
+    document.getElementById("btnGuardar").textContent = "Actualizar Producto";
+    document.getElementById("btnCancelar").style.display = "inline-block";
+
+    // Cambiar a la pestaña de formulario
+    cambiarTab('cargar');
+  }
+
+  window.cancelarEdicion = function() {
+    // Limpiar el formulario
+    document.getElementById("productoIdEditar").value = "";
+    document.getElementById("nombre").value = "";
+    document.getElementById("categoria").value = "";
+    document.getElementById("precio").value = "";
+    document.getElementById("imagenUrl").value = "";
+    document.getElementById("previewImg").style.display = "none";
+    document.getElementById("destacado").checked = false;
+    document.getElementById("oferta").checked = false;
+
+    // Volver a modo agregar
+    document.getElementById("form-title").textContent = "Agregar Nuevo Producto";
+    document.getElementById("btnGuardar").textContent = "Guardar Producto";
+    document.getElementById("btnCancelar").style.display = "none";
   }
 </script>
 

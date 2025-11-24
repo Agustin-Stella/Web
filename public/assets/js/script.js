@@ -7,6 +7,48 @@ let productosFiltrados = [];
 let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+// Sistema de notificaciones Toast
+function showToast(message, type = 'success') {
+  // Crear contenedor si no existe
+  let container = document.querySelector('.toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  // Crear el toast
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+
+  // Iconos según el tipo
+  const icons = {
+    success: '✓',
+    error: '✕',
+    info: 'ℹ',
+    warning: '⚠'
+  };
+
+  toast.innerHTML = `
+    <span class="toast-icon">${icons[type] || icons.success}</span>
+    <span class="toast-message">${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  // Eliminar después de 3 segundos
+  setTimeout(() => {
+    toast.classList.add('hiding');
+    setTimeout(() => {
+      toast.remove();
+      // Eliminar contenedor si está vacío
+      if (container.children.length === 0) {
+        container.remove();
+      }
+    }, 300);
+  }, 3000);
+}
+
 // Cargar productos desde Firestore
 async function cargarProductos() {
   const landingGrid = document.getElementById("landingGrid");
@@ -35,8 +77,10 @@ async function cargarProductos() {
     productosFiltrados = [...todosLosProductos];
 
     if (landingGrid) {
-      const destacados = obtenerProductosDestacados(todosLosProductos, 9);
+      const destacados = obtenerProductosDestacados(todosLosProductos, 12);
       mostrarProductos(destacados, landingGrid);
+      // Inicializar carrusel después de cargar productos destacados
+      setTimeout(() => initCarousel(), 100);
     }
 
     if (catalogGrid) {
@@ -83,14 +127,7 @@ function mostrarProductos(productos, container) {
       <div class="product-image">
         <img src="${producto.imagen || 'placeholder.jpg'}" alt="${producto.nombre || 'Producto'}">
         <div class="product-overlay">
-          <button class="overlay-btn" onclick="verProducto('${producto.id}')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-            VER
-          </button>
-          <button class="overlay-btn ${enCarrito ? 'btn-added' : ''}" onclick="agregarAlCarrito('${producto.id}')" ${enCarrito ? 'disabled' : ''}>
+          <button class="overlay-btn overlay-btn-large ${enCarrito ? 'btn-added' : ''}" onclick="verProducto('${producto.id}')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M9 2L6.5 6M9 2h6m-6 0L6.5 6m8.5-4l2.5 4M6.5 6h11M6.5 6L5 21h14l-1.5-15"></path>
             </svg>
@@ -160,7 +197,7 @@ window.agregarAlCarrito = function(id) {
   guardarCarrito();
   actualizarBadges();
   mostrarProductos(productosFiltrados, document.getElementById("catalogGrid"));
-  alert("Producto agregado al carrito");
+  showToast("Producto agregado al carrito", "success");
 }
 
 window.addToCartFromModal = function() {
@@ -184,7 +221,7 @@ window.addToCartFromModal = function() {
   guardarCarrito();
   actualizarBadges();
   closeModal();
-  alert("Producto agregado al carrito");
+  showToast("Producto agregado al carrito", "success");
 }
 
 window.increaseQuantity = function() {
@@ -294,18 +331,24 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.dropdown-item').forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
-        
+
+        // Remover clase active de todas las categorías
+        document.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('active'));
+
+        // Agregar clase active a la categoría clickeada
+        item.classList.add('active');
+
         const categoria = item.dataset.category;
-        
+
         if (categoria) {
-  productosFiltrados = todosLosProductos.filter(p => 
+  productosFiltrados = todosLosProductos.filter(p =>
     (p.categoria || '').toLowerCase() === categoria.toLowerCase()
   );
 } else {
   productosFiltrados = [...todosLosProductos];
 }
 
-        
+
         const catalogGrid = document.getElementById("catalogGrid");
         if (catalogGrid) {
           mostrarProductos(productosFiltrados, catalogGrid);
@@ -339,10 +382,19 @@ function buscarProductos() {
   const searchInput = document.getElementById("searchInput");
   const termino = searchInput.value.toLowerCase().trim();
 
+  // Remover resaltado de categorías al buscar
+  document.querySelectorAll('.dropdown-item').forEach(item => item.classList.remove('active'));
+
+  // Limpiar filtro de categoría
+  const categoryFilter = document.getElementById("categoryFilter");
+  if (categoryFilter) {
+    categoryFilter.value = '';
+  }
+
   if (termino === '') {
     productosFiltrados = [...todosLosProductos];
   } else {
-    productosFiltrados = todosLosProductos.filter(p => 
+    productosFiltrados = todosLosProductos.filter(p =>
       (p.nombre || '').toLowerCase().includes(termino) ||
       (p.categoria || '').toLowerCase().includes(termino)
     );
@@ -356,10 +408,18 @@ function filtrarPorCategoria() {
   const categoryFilter = document.getElementById("categoryFilter");
   const categoria = categoryFilter.value;
 
+  // Actualizar resaltado en dropdown del header
+  document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.dataset.category && item.dataset.category.toLowerCase() === categoria.toLowerCase()) {
+      item.classList.add('active');
+    }
+  });
+
   if (categoria === '') {
     productosFiltrados = [...todosLosProductos];
   } else {
-    productosFiltrados = todosLosProductos.filter(p => 
+    productosFiltrados = todosLosProductos.filter(p =>
       (p.categoria || '').toLowerCase() === categoria.toLowerCase()
     );
   }
@@ -517,7 +577,7 @@ function mostrarCheckout() {
 
 window.submitOrder = function() {
   if (cart.length === 0) {
-    alert('El carrito está vacío');
+    showToast('El carrito está vacío', 'warning');
     return;
   }
   
@@ -548,12 +608,18 @@ window.submitOrder = function() {
   const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
   
   window.open(url, '_blank');
-  
+
   cart = [];
   guardarCarrito();
   actualizarBadges();
-  
-  alert('Pedido enviado! Te redirigimos a WhatsApp');
+
+  // Actualizar vista de productos para reflejar que el carrito está vacío
+  const catalogGrid = document.getElementById("catalogGrid");
+  if (catalogGrid) {
+    mostrarProductos(productosFiltrados, catalogGrid);
+  }
+
+  showToast('Pedido enviado! Te redirigimos a WhatsApp', 'success');
   navigateTo('catalog');
 }
 
@@ -583,10 +649,10 @@ window.toggleWishlistFromModal = function() {
   
   if (index > -1) {
     wishlist.splice(index, 1);
-    alert('Producto quitado de la lista de deseos');
+    showToast('Producto quitado de la lista de deseos', 'info');
   } else {
     wishlist.push(producto);
-    alert('Producto agregado a la lista de deseos');
+    showToast('Producto agregado a la lista de deseos', 'success');
   }
   
   guardarWishlist();
@@ -640,10 +706,10 @@ window.addToCartFromWishlist = function(id) {
       cantidad: 1
     });
   }
-  
+
   guardarCarrito();
   actualizarBadges();
-  alert('Producto agregado al carrito');
+  showToast('Producto agregado al carrito', 'success');
 }
 
 window.removeFromWishlist = function(id) {
@@ -661,3 +727,145 @@ window.clearWishlist = function() {
     mostrarWishlist();
   }
 }
+
+// ==================== CARRUSEL DE PRODUCTOS DESTACADOS ====================
+let currentSlide = 0;
+let totalSlides = 0;
+let autoplayInterval = null;
+let itemsPerSlide = 4;
+
+function initCarousel() {
+  const track = document.getElementById('landingGrid');
+  if (!track) return;
+
+  // Detectar ancho de pantalla y ajustar itemsPerSlide
+  const width = window.innerWidth;
+  if (width <= 480) {
+    itemsPerSlide = 1;
+  } else if (width <= 768) {
+    itemsPerSlide = 2;
+  } else if (width <= 1200) {
+    itemsPerSlide = 3;
+  } else {
+    itemsPerSlide = 4;
+  }
+
+  const cards = track.querySelectorAll('.product-card');
+  totalSlides = Math.ceil(cards.length / itemsPerSlide);
+
+  // Crear dots de navegación
+  createCarouselDots();
+
+  // Event listeners para botones
+  const prevBtn = document.getElementById('carouselPrev');
+  const nextBtn = document.getElementById('carouselNext');
+
+  if (prevBtn) prevBtn.addEventListener('click', () => moveCarousel('prev'));
+  if (nextBtn) nextBtn.addEventListener('click', () => moveCarousel('next'));
+
+  // Auto-play cada 5 segundos
+  startAutoplay();
+
+  // Pausar al hacer hover
+  const container = document.querySelector('.carousel-container');
+  if (container) {
+    container.addEventListener('mouseenter', stopAutoplay);
+    container.addEventListener('mouseleave', startAutoplay);
+  }
+
+  // Actualizar vista
+  updateCarouselPosition();
+}
+
+function createCarouselDots() {
+  const dotsContainer = document.getElementById('carouselDots');
+  if (!dotsContainer) return;
+
+  dotsContainer.innerHTML = '';
+
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('button');
+    dot.className = `carousel-dot ${i === 0 ? 'active' : ''}`;
+    dot.addEventListener('click', () => goToSlide(i));
+    dotsContainer.appendChild(dot);
+  }
+}
+
+function moveCarousel(direction) {
+  if (direction === 'next') {
+    currentSlide = (currentSlide + 1) % totalSlides;
+  } else {
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+  }
+
+  updateCarouselPosition();
+}
+
+function goToSlide(index) {
+  currentSlide = index;
+  updateCarouselPosition();
+}
+
+function updateCarouselPosition() {
+  const track = document.getElementById('landingGrid');
+  if (!track) return;
+
+  // Calcular desplazamiento basado en el ancho de las cards + gap
+  const card = track.querySelector('.product-card');
+  if (!card) return;
+
+  const cardWidth = card.offsetWidth;
+  const gap = 25; // Debe coincidir con el gap del CSS
+  const slideWidth = (cardWidth + gap) * itemsPerSlide;
+
+  track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+
+  // Actualizar dots
+  const dots = document.querySelectorAll('.carousel-dot');
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentSlide);
+  });
+}
+
+function startAutoplay() {
+  stopAutoplay(); // Limpiar cualquier intervalo existente
+  autoplayInterval = setInterval(() => {
+    moveCarousel('next');
+  }, 5000); // Cambiar cada 5 segundos
+}
+
+function stopAutoplay() {
+  if (autoplayInterval) {
+    clearInterval(autoplayInterval);
+    autoplayInterval = null;
+  }
+}
+
+// Recalcular al redimensionar ventana
+window.addEventListener('resize', () => {
+  // Actualizar itemsPerSlide según el ancho de pantalla
+  const width = window.innerWidth;
+  if (width <= 480) {
+    itemsPerSlide = 1;
+  } else if (width <= 768) {
+    itemsPerSlide = 2;
+  } else if (width <= 1200) {
+    itemsPerSlide = 3;
+  } else {
+    itemsPerSlide = 4;
+  }
+
+  const track = document.getElementById('landingGrid');
+  if (!track) return;
+
+  const cards = track.querySelectorAll('.product-card');
+  totalSlides = Math.ceil(cards.length / itemsPerSlide);
+
+  // Asegurar que currentSlide no sea mayor que totalSlides
+  if (currentSlide >= totalSlides) {
+    currentSlide = totalSlides - 1;
+  }
+
+  createCarouselDots();
+  updateCarouselPosition();
+});
