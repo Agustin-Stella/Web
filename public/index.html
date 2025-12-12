@@ -8,91 +8,42 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="header" id="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <img src="assets/images/logo1.jpg" alt="Forrajeria Niki" id="logoImg">
-                </div>
-                <nav class="nav">
-                    <a href="#ofertas" class="nav-link" data-page="ofertas">Ofertas</a>
-                    <div class="nav-dropdown">
-                        <a href="#" class="nav-link" id="categoriasBtn">Categorías</a>
-                        <div class="dropdown-menu" id="categoriasMenu">
-                            <div class="dropdown-columns">
-                                <div class="dropdown-column">
-                                    <a href="#" class="dropdown-item" data-category="aromatizantes-ambiente">AROMATIZANTES-AMBIENTE</a>
-                                    <a href="#" class="dropdown-item" data-category="aromatizantes-automotor">AROMATIZANTES-AUTOMOTOR</a>
-                                    <a href="#" class="dropdown-item" data-category="aromatizantes-textil">AROMATIZANTES-TEXTIL</a>
-                                    <a href="#" class="dropdown-item" data-category="automotor">AUTOMOTOR</a>
-                                    <a href="#" class="dropdown-item" data-category="baldes">BALDES</a>
-                                    <a href="#" class="dropdown-item" data-category="baño">BAÑO</a>
-                                    <a href="#" class="dropdown-item" data-category="bazar">BAZAR</a>
-                                    <a href="#" class="dropdown-item" data-category="bolsas">BOLSAS</a>
-                                    <a href="#" class="dropdown-item" data-category="broches">BROCHES</a>
-                                    <a href="#" class="dropdown-item" data-category="cabos">CABOS</a>
-                                    <a href="#" class="dropdown-item" data-category="cepilleria">CEPILLERIA</a>
-                                    <a href="#" class="dropdown-item" data-category="cesto">CESTO</a>
-                                    <a href="#" class="dropdown-item" data-category="cestos">CESTOS</a>
-                                    <a href="#" class="dropdown-item" data-category="contenedores">CONTENEDORES</a>
-                                    <a href="#" class="dropdown-item" data-category="escobillones">ESCOBILLONES</a>
-                                </div>
-                                <div class="dropdown-column">
-                                    <a href="#" class="dropdown-item" data-category="esponja">ESPONJA</a>
-                                    <a href="#" class="dropdown-item" data-category="esponjas">ESPONJAS</a>
-                                    <a href="#" class="dropdown-item" data-category="fuentones">FUENTONES</a>
-                                    <a href="#" class="dropdown-item" data-category="gatillos">GATILLOS</a>
-                                    <a href="#" class="dropdown-item" data-category="guantes">GUANTES</a>
-                                    <a href="#" class="dropdown-item" data-category="jabon-lavar">JABON DE LAVAR</a>
-                                    <a href="#" class="dropdown-item" data-category="jardineria">JARDINERIA</a>
-                                    <a href="#" class="dropdown-item" data-category="lampazo">LAMPAZO</a>
-                                    <a href="#" class="dropdown-item" data-category="lampazos-varios">LAMPAZOS VARIOS</a>
-                                    <a href="#" class="dropdown-item" data-category="lavavajilla">LAVAVAJILLA</a>
-                                    <a href="#" class="dropdown-item" data-category="limpiador">LIMPIADOR</a>
-                                    <a href="#" class="dropdown-item" data-category="mangueras">MANGUERAS</a>
-                                    <a href="#" class="dropdown-item" data-category="mopa">MOPA</a>
-                                    <a href="#" class="dropdown-item" data-category="organizador">ORGANIZADOR</a>
-                                    <a href="#" class="dropdown-item" data-category="palas">PALAS</a>
-                                </div>
-                                <div class="dropdown-column">
-                                    <a href="#" class="dropdown-item" data-category="papel">PAPEL</a>
-                                    <a href="#" class="dropdown-item" data-category="paño">PAÑO</a>
-                                    <a href="#" class="dropdown-item" data-category="perchas">PERCHAS</a>
-                                    <a href="#" class="dropdown-item" data-category="perfumeria">PERFUMERIA</a>
-                                    <a href="#" class="dropdown-item" data-category="pileta">PILETA</a>
-                                    <a href="#" class="dropdown-item" data-category="plumeros">PLUMEROS</a>
-                                    <a href="#" class="dropdown-item" data-category="quitamancha">QUITAMANCHA</a>
-                                    <a href="#" class="dropdown-item" data-category="repasador">REPASADOR</a>
-                                    <a href="#" class="dropdown-item" data-category="sahumerios">SAHUMERIOS</a>
-                                    <a href="#" class="dropdown-item" data-category="secador">SECADOR</a>
-                                    <a href="#" class="dropdown-item" data-category="secadores">SECADORES</a>
-                                    <a href="#" class="dropdown-item" data-category="suavizantes">SUAVIZANTES</a>
-                                    <a href="#" class="dropdown-item" data-category="tender">TENDER</a>
-                                    <a href="#" class="dropdown-item" data-category="textil">TEXTIL</a>
-                                    <a href="#" class="dropdown-item" data-category="trapo">TRAPO</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#nosotros" class="nav-link" data-page="nosotros">Nosotros</a>
-                </nav>
-                <div class="header-icons">
-                    <div class="icon-wrapper">
-                        <svg class="icon" id="wishlistIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                        <span class="badge" id="wishlistBadge">0</span>
-                    </div>
-                    <div class="icon-wrapper">
-                        <svg class="icon" id="cartIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 2L6.5 6M9 2h6m-6 0L6.5 6m8.5-4l2.5 4M6.5 6h11M6.5 6L5 21h14l-1.5-15"></path>
-                        </svg>
-                        <span class="badge" id="cartBadge">0</span>
-                    </div>
-                </div>
-            </div>
+<header class="header" id="header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <img src="assets/images/logo1.jpg" alt="Forrajeria Niki" id="logoImg">
+      </div>
+      <nav class="nav">
+        <a href="#ofertas" class="nav-link" data-page="ofertas">Ofertas</a>
+
+        <div class="nav-dropdown">
+          <a href="#" class="nav-link" id="categoriasBtn">Categorías</a>
+          <div class="dropdown-menu" id="categoriasMenu">
+            <!-- Se llena dinámicamente desde Firestore -->
+          </div>
         </div>
-    </header>
+
+        <a href="#nosotros" class="nav-link" data-page="nosotros">Nosotros</a>
+      </nav>
+
+      <div class="header-icons">
+        <div class="icon-wrapper">
+          <svg class="icon" id="wishlistIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="badge" id="wishlistBadge">0</span>
+        </div>
+        <div class="icon-wrapper">
+          <svg class="icon" id="cartIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 2L6.5 6M9 2h6m-6 0L6.5 6m8.5-4l2.5 4M6.5 6h11M6.5 6L5 21h14l-1.5-15"></path>
+          </svg>
+          <span class="badge" id="cartBadge">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -137,9 +88,10 @@
                         </div>
                         <div class="filter-section">
                             <h3>Rubros</h3>
-                            <select id="categoryFilter">
-                                <option value="">Todas los rubros</option>
-                            </select>
+<select id="categoryFilter">
+  <option value="">Todas las categorías</option>
+</select>
+
                         </div>
                     </aside>
 
@@ -288,49 +240,29 @@
                 <div class="checkout-layout">
                     <div class="checkout-form">
                         <h2>Detalles del pedido</h2>
-                        <form id="checkoutForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Nombre</label>
-                                    <input type="text" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Apellido</label>
-                                    <input type="text" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Dirección</label>
-                                <input type="text" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Ciudad</label>
-                                <input type="text" required>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Teléfono</label>
-                                    <input type="tel" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Nombre del Vendedor</label>
-                                <select required>
-                                    <option value="">Seleccionar Vendedor</option>
-                                    <option value="vendedor1">Vendedor 1</option>
-                                    <option value="vendedor2">Vendedor 2</option>
-                                    <option value="vendedor3">Vendedor 3</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="label-red">información Adicional</label>
-                                <textarea placeholder="Notas sobre tu pedido, e.g. notas especiales para la entrega."></textarea>
-                            </div>
-                        </form>
+                    <form id="checkoutForm">
+    <div class="form-row">
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="customerName" required>
+        </div>
+        <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" id="customerLastName" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Dirección</label>
+        <input type="text" id="customerAddress" required>
+    </div>
+    <div class="form-group">
+        <label>Descripción del Pedido (Opcional)</label>
+        <textarea id="orderDescription" rows="3" placeholder="Ej: Entregar por la tarde, incluir bolsa..."></textarea>
+    </div>
+    <button type="button" class="btn-primary" onclick="submitOrder()">FINALIZAR PEDIDO</button>
+</form>
+
+
                     </div>
                     <div class="checkout-summary">
                         <h2>Tu pedido</h2>

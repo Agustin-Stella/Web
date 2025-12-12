@@ -1,31 +1,14 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+// firebase-config.js
+// Configuración de tu app web de Firebase (proyecto: nikiforrajeria)
 
-// Configuración de Firebase (cliente web)
 const firebaseConfig = {
-  apiKey: "AIzaSyBbTgPwzoyB4jMWmev1adZm78699fuf0uc",
-  authDomain: "web-brondo.firebaseapp.com",
-  projectId: "web-brondo",
-  storageBucket: "web-brondo.firebasestorage.app",
-  messagingSenderId: "404206887647",
-  appId: "1:404206887647:web:79bd574db778616bf0ff6a",
-  measurementId: "G-YY5ZWDFDFE"
+  apiKey: "AIzaSyDZD4glBftOWVYdoviY-_v6Jzb6YD-QG38",
+  authDomain: "nikiforrajeria.firebaseapp.com",
+  projectId: "nikiforrajeria",
+  storageBucket: "nikiforrajeria.firebasestorage.app",
+  messagingSenderId: "98867618188",
+  appId: "1:98867618188:web:4fa43e18ded6b38a8136a9",
+  measurementId: "G-QPNNDNP1QD"
 };
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-
-// Analytics puede lanzar si no está disponible en el entorno; capturamos el error
-let analytics;
-try {
-  analytics = getAnalytics(app);
-} catch (e) {
-  // No crítico en entorno de desarrollo sin permisos/soporte
-  console.warn('Firebase Analytics no inicializado:', e.message || e);
-}
-
-// Exportar instancia de Firestore para usarla en la app
-const db = getFirestore(app);
-
-export { app, analytics, db };
+export default firebaseConfig;
