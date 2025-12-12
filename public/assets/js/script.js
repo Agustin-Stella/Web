@@ -1,11 +1,20 @@
+// script.js
 import { db } from "./firebase.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+import { 
+  collection, 
+  getDocs,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
 
 // Variables globales
 let todosLosProductos = [];
 let productosFiltrados = [];
 let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+
 
 // Sistema de notificaciones Toast
 function showToast(message, type = 'success') {
@@ -145,22 +154,121 @@ function mostrarProductos(productos, container) {
     container.appendChild(card);
   });
 }
-
-function cargarCategorias() {
+async function cargarCategorias() {
   const categoryFilter = document.getElementById("categoryFilter");
   if (!categoryFilter) return;
 
-  const categorias = [...new Set(todosLosProductos.map(p => p.categoria).filter(Boolean))];
-  categorias.sort();
+  try {
+    // Traer categorías globales desde Firestore
+    const docRef = doc(db, "configuracion", "categorias");
+    const snap = await getDoc(docRef);
 
-  categoryFilter.innerHTML = '<option value="">Todas las categorías</option>';
-  categorias.forEach(cat => {
-    const option = document.createElement("option");
-    option.value = cat;
-    option.textContent = cat.toUpperCase();
-    categoryFilter.appendChild(option);
-  });
+    let categorias = [];
+
+    if (snap.exists()) {
+      const data = snap.data();
+      categorias = data.lista || [];
+    } else {
+      // Fallback: si no existe el doc, usar las categorías de los productos
+      categorias = [...new Set(todosLosProductos.map(p => p.categoria).filter(Boolean))];
+    }
+
+    categorias = [...categorias].sort();
+
+    categoryFilter.innerHTML = `<option value="">Todas las categorías</option>`;
+    categorias.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat;
+      option.textContent = cat.toUpperCase();
+      categoryFilter.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error al cargar categorías del filtro:", error);
+  }
 }
+
+
+
+async function cargarCategoriasLanding() {
+  const categoriasMenu = document.getElementById("categoriasMenu");
+  if (!categoriasMenu) return;
+
+  categoriasMenu.innerHTML = `
+    <div class="dropdown-columns">
+      <div class="dropdown-column" id="landing-col-1"></div>
+      <div class="dropdown-column" id="landing-col-2"></div>
+      <div class="dropdown-column" id="landing-col-3"></div>
+    </div>
+  `;
+
+  const col1 = document.getElementById("landing-col-1");
+  const col2 = document.getElementById("landing-col-2");
+  const col3 = document.getElementById("landing-col-3");
+  if (!col1 || !col2 || !col3) return;
+
+  try {
+    const docRef = doc(db, "configuracion", "categorias");
+    const snap = await getDoc(docRef);
+
+    if (!snap.exists()) return;
+
+    const data = snap.data();
+    let lista = data.lista || [];
+    lista = [...lista].sort();
+
+    const columnas = [col1, col2, col3];
+
+    lista.forEach((cat, index) => {
+      const a = document.createElement("a");
+      a.href = "#";
+      a.className = "dropdown-item";
+      a.dataset.category = cat.toLowerCase();
+      a.textContent = cat;
+
+      const colIndex = index % columnas.length;
+      columnas[colIndex].appendChild(a);
+    });
+
+    document.querySelectorAll(".dropdown-item").forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        document.querySelectorAll(".dropdown-item").forEach((i) =>
+          i.classList.remove("active")
+        );
+        item.classList.add("active");
+
+        const categoria = item.dataset.category;
+
+        if (categoria) {
+          productosFiltrados = todosLosProductos.filter(
+            (p) =>
+              (p.categoria || "").toLowerCase() === categoria.toLowerCase()
+          );
+        } else {
+          productosFiltrados = [...todosLosProductos];
+        }
+
+        const catalogGrid = document.getElementById("catalogGrid");
+        if (catalogGrid) {
+          mostrarProductos(productosFiltrados, catalogGrid);
+        }
+        actualizarContador();
+
+        const categoryFilter = document.getElementById("categoryFilter");
+        if (categoryFilter) {
+          categoryFilter.value = categoria || "";
+        }
+
+        navigateTo("catalog");
+        categoriasMenu.classList.remove("active");
+      });
+    });
+  } catch (error) {
+    console.error("Error al cargar categorías en el header:", error);
+  }
+}
+
 
 window.verProducto = function(id) {
   const producto = todosLosProductos.find(p => p.id === id);
@@ -275,10 +383,11 @@ window.navigateTo = function(page) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   cargarProductos();
+  cargarCategoriasLanding(); // NUEVO
   actualizarBadges();
-  navigateTo('catalog');
+  navigateTo("catalog");
 
   const searchBtn = document.getElementById("searchBtn");
   const searchInput = document.getElementById("searchInput");
@@ -574,7 +683,6 @@ function mostrarCheckout() {
   
   orderTotal.textContent = `$${Number(total).toLocaleString('es-AR', {minimumFractionDigits: 2})}`;
 }
-
 window.submitOrder = function() {
   if (cart.length === 0) {
     showToast('El carrito está vacío', 'warning');
@@ -587,41 +695,53 @@ window.submitOrder = function() {
     return;
   }
   
-  let mensaje = `*NUEVO PEDIDO*
-
-*Cliente:* ${form.querySelector('input[type="text"]').value}
-*Productos:*
-`;
+  // Obtener datos del formulario
+  const nombre = document.getElementById("customerName").value;
+  const apellido = document.getElementById("customerLastName").value;
+  const direccion = document.getElementById("customerAddress").value;
+  const descripcion = document.getElementById("orderDescription").value;
+  
+  // Construir mensaje
+  let mensaje = "*NUEVO PEDIDO*\n\n";
+  mensaje += `*Cliente:* ${nombre} ${apellido}\n`;
+  mensaje += `*Dirección:* ${direccion}\n`;
+  
+  if (descripcion.trim() !== '') {
+    mensaje += `*Descripción:* ${descripcion}\n`;
+  }
+  
+  mensaje += "\n*PRODUCTOS:*\n";
   
   let total = 0;
   cart.forEach(item => {
     const subtotal = (item.precio || 0) * item.cantidad;
     total += subtotal;
-    mensaje += `- ${item.nombre} x${item.cantidad} = $${Number(subtotal).toLocaleString('es-AR')}
-`;
+    mensaje += `- ${item.nombre} x${item.cantidad} = $${Number(subtotal).toLocaleString('es-AR', {minimumFractionDigits: 0})}\n`;
   });
   
-  mensaje += `
-*TOTAL: $${Number(total).toLocaleString('es-AR')}*`;
+  mensaje += `\n*TOTAL: $${Number(total).toLocaleString('es-AR', {minimumFractionDigits: 0})}*`;
   
-  const numeroWhatsApp = "543515503079";
+  const numeroWhatsApp = "5493515503079";
   const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
   
   window.open(url, '_blank');
 
+  // Limpiar carrito
   cart = [];
   guardarCarrito();
   actualizarBadges();
 
-  // Actualizar vista de productos para reflejar que el carrito está vacío
+  // Actualizar vista
   const catalogGrid = document.getElementById("catalogGrid");
   if (catalogGrid) {
     mostrarProductos(productosFiltrados, catalogGrid);
   }
 
   showToast('Pedido enviado! Te redirigimos a WhatsApp', 'success');
+  form.reset();
   navigateTo('catalog');
 }
+
 
 const navigateToOriginal = window.navigateTo;
 window.navigateTo = function(page) {
@@ -869,3 +989,5 @@ window.addEventListener('resize', () => {
   createCarouselDots();
   updateCarouselPosition();
 });
+
+

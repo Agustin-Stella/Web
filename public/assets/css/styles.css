@@ -583,7 +583,7 @@ body {
 }
 
 .btn-primary:hover {
-    background: #E6AC00;
+    background: #FFBF00;
     box-shadow: 0 5px 15px rgba(255, 191, 0, 0.3);
 }
 
@@ -919,7 +919,7 @@ body {
 }
 
 .scroll-top:hover {
-    background: #E6AC00;
+    background: #FFBF00;
     transform: translateY(-5px);
 }
 
@@ -1440,7 +1440,7 @@ body {
 }
 
 .carousel-btn:hover {
-    background: #E6AC00;
+    background: #FFBF00;
     transform: scale(1.1);
 }
 
@@ -1478,7 +1478,7 @@ body {
 }
 
 .carousel-dot:hover {
-    background: #E6AC00;
+    background: #FFBF00;
 }
 
 /* Responsive para carrusel */
