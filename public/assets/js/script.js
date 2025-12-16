@@ -723,7 +723,7 @@ window.submitOrder = function() {
   
   mensaje += `\n*TOTAL: $${Number(total).toLocaleString('es-AR', {minimumFractionDigits: 0})}*`;
   
-  const numeroWhatsApp = "5493515503079";
+  const numeroWhatsApp = "5493515286282";
   const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
   
   window.open(url, '_blank');
