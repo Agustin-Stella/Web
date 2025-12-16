@@ -308,46 +308,11 @@ body {
     font-size: 14px;
 }
 
-.view-toggle {
-    display: flex;
-    gap: 10px;
-}
-
-.view-btn {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.3s;
-}
-
-.view-btn svg {
-    width: 20px;
-    height: 20px;
-    color: #666;
-}
-
-.view-btn.active,
-.view-btn:hover {
-    background: #FFBF00;
-    border-color: #FFBF00;
-}
-
-.view-btn.active svg,
-.view-btn:hover svg {
-    color: white;
-}
-
 /* Products Grid */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
-}
-
-.products-grid.list-view {
-    grid-template-columns: 1fr;
 }
 
 /* Product Card */
@@ -726,6 +691,34 @@ body {
 .feature-card p {
     font-size: 14px;
     color: #666;
+}
+
+/* Map Section */
+.map-section {
+    margin-top: 80px;
+    text-align: center;
+}
+
+.map-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #FFBF00;
+    margin-bottom: 30px;
+}
+
+.map-container {
+    margin: 0 auto;
+    max-width: 1000px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.map-address {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
 }
 
 /* Checkout Page */
@@ -1238,8 +1231,8 @@ body {
     
     .dropdown-menu {
         min-width: 90vw;
-        left: 5vw;
-        transform: none;
+        left: 50%;
+        transform: translateX(-50%);
     }
     
     .dropdown-columns {
