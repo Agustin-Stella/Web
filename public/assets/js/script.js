@@ -428,6 +428,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (categoriasBtn && categoriasMenu) {
     categoriasBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      // Quitar clase active de todos los nav-links al abrir categorías
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
       categoriasMenu.classList.toggle('active');
     });
     
