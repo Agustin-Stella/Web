@@ -205,51 +205,70 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const passwordInput = document.getElementById("password");
-    if(passwordInput) {
-      passwordInput.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') loginSimple();
-      });
-    }
+  const passwordInput = document.getElementById("password");
+  if(passwordInput) {
+    passwordInput.addEventListener('keypress', (e) => {
+      if(e.key === 'Enter') loginSimple();
+    });
+  }
 
-    const imagenUrl = document.getElementById("imagenUrl");
-    if(imagenUrl) {
-      imagenUrl.addEventListener('input', (e) => {
-        const url = e.target.value;
-        const preview = document.getElementById("previewImg");
-        if(url && (url.startsWith('http://') || url.startsWith('https://'))) {
-          preview.src = url;
-          preview.style.display = 'block';
-        } else {
-          preview.style.display = 'none';
-        }
-      });
-    }
+  const imagenUrl = document.getElementById("imagenUrl");
+  if(imagenUrl) {
+    imagenUrl.addEventListener('input', (e) => {
+      const url = e.target.value;
+      const preview = document.getElementById("previewImg");
+      if(url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        preview.src = url;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+  }
 
-    const archivoImagen = document.getElementById("archivoImagen");
-    if(archivoImagen) {
-      archivoImagen.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if(!file) return;
+  const archivoImagen = document.getElementById("archivoImagen");
+  if(archivoImagen) {
+    archivoImagen.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if(!file) return;
 
-        if(!file.type.startsWith('image/')) {
-          alert('Por favor selecciona un archivo de imagen válido');
-          e.target.value = '';
-          return;
-        }
+      if(!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido');
+        e.target.value = '';
+        return;
+      }
 
-        const preview = document.getElementById("previewImg");
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          preview.src = event.target.result;
-          preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
+      const preview = document.getElementById("previewImg");
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        preview.src = event.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
 
-        await uploadImageToStorage(file);
-      });
-    }
-  });
+      await uploadImageToStorage(file);
+    });
+  }
+
+  // >>> BARRA DE BÚSQUEDA <<<
+  const buscador = document.getElementById("buscadorProductos");
+  if (buscador) {
+    buscador.addEventListener("input", (e) => {
+      const texto = e.target.value.toLowerCase().trim();
+
+      if (!texto) {
+        // sin texto, muestro todos
+        renderizarProductos(productos);
+      } else {
+        const filtrados = productos.filter(p =>
+          (p.nombre || "").toLowerCase().includes(texto)
+        );
+        renderizarProductos(filtrados);
+      }
+    });
+  }
+});
+
 
 async function uploadImageToStorage(file) {
   if(!isAuthenticated) {
