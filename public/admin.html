@@ -22,7 +22,7 @@
 
 <div id="gestion">
   <div class="user-info">
-    <span>👤 Administrador</span>
+    <span>Administrador</span>
     <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
   </div>
   
@@ -145,7 +145,17 @@
 <script type="module">
   // IMPORTACIONES CORREGIDAS - Una sola vez
   import { db, storage } from "./assets/js/firebase.js";
-  import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+  import {
+  collection,
+  addDoc,
+  getDocs,
+  getDoc,   // 👈 ESTA LÍNEA FALTABA
+  doc,
+  updateDoc,
+  deleteDoc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
   import { ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
   import { supabase } from "./assets/js/supabase.js";
 
@@ -441,28 +451,48 @@ async function uploadImageToStorage(file) {
       console.error(error);
     }
   }
+window.eliminarCategoria = async function(nombreCategoria) {
+  if (!confirm(`¿Eliminar la categoría "${nombreCategoria}"?`)) return;
 
-  window.eliminarCategoria = async function(categoria) {
-    if(!isAuthenticated) return alert("Debes estar autenticado");
-    
-    if(!confirm(`¿Seguro que deseas eliminar la categoría "${categoria}"?\n\nNota: Los productos con esta categoría no serán eliminados.`)) {
+  try {
+    // 1️⃣ Verificar si la categoría está en uso
+    const productosSnap = await getDocs(collection(db, "productos"));
+    const enUso = productosSnap.docs.some(
+      doc => doc.data().categoria === nombreCategoria
+    );
+
+    if (enUso) {
+      alert("❌ No se puede eliminar la categoría porque está asignada a productos.");
       return;
     }
-    
-    try {
-      const nuevasCategorias = categorias.filter(cat => cat !== categoria);
-      
-      await setDoc(doc(db, "configuracion", "categorias"), {
-        lista: nuevasCategorias
-      });
-      
-      alert("Categoría eliminada correctamente");
-      cargarCategorias();
-    } catch(error) {
-      alert("Error al eliminar categoría: " + error.message);
-      console.error(error);
+
+    // 2️⃣ Leer el documento REAL de categorías
+    const categoriasRef = doc(db, "configuracion", "categorias");
+    const categoriasSnap = await getDoc(categoriasRef);
+
+    if (!categoriasSnap.exists()) {
+      alert("❌ No existe el documento de categorías");
+      return;
     }
-  }
+
+    const listaActual = categoriasSnap.data().lista || [];
+
+    // 3️⃣ Filtrar la categoría
+    const nuevaLista = listaActual.filter(cat => cat !== nombreCategoria);
+
+    // 4️⃣ Guardar correctamente
+    await setDoc(categoriasRef, { lista: nuevaLista });
+
+    alert("✅ Categoría eliminada correctamente");
+    cargarCategorias(); // recargar lista admin
+
+  } catch (error) {
+  console.error("🔥 Error REAL al eliminar categoría:", error);
+  alert("Error al eliminar categoría. Mirá la consola.");
+}
+
+};
+
 
   window.guardarProducto = async function(){
     if(!isAuthenticated) {
@@ -543,7 +573,7 @@ async function uploadImageToStorage(file) {
         ${producto.oferta === true ? '<span class="badge oferta">OFERTA</span>' : ''}
       </div>
       <button class="btn-destacar" onclick="toggleDestacado('${producto.id}', ${!producto.destacado})">
-        ${producto.destacado ? '★ Quitar Destacado' : '☆ Marcar Destacado'}
+        ${producto.destacado ? 'Quitar Destacado' : 'Marcar Destacado'}
       </button>
       <button class="btn-oferta" onclick="toggleOferta('${producto.id}', ${!producto.oferta})">
         ${producto.oferta ? 'Quitar Oferta' : 'Marcar Oferta'}
