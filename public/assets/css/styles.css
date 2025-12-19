@@ -1534,3 +1534,318 @@ body {
         display: block;
     }
 }
+
+/* ======================================
+   PÁGINA DE GUÍA DE COMPRA
+====================================== */
+
+/* Encabezado de la Guía */
+.guia-header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 40px 20px;
+}
+
+.guia-intro {
+    font-size: 18px;
+    color: #666;
+    max-width: 700px;
+    margin: 20px auto 0;
+    line-height: 1.8;
+}
+
+/* Contenedor de pasos */
+.guia-steps {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Cada paso individual */
+.guia-step {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 80px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.guia-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 35px;
+    top: 80px;
+    bottom: -80px;
+    width: 2px;
+    background: linear-gradient(to bottom, #FFBF00 0%, #FFD966 50%, transparent 100%);
+    z-index: -1;
+}
+
+/* Número del paso */
+.step-number {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #FFBF00 0%, #FFD966 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 191, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.step-number span {
+    font-size: 32px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Contenido del paso */
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.step-description {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+/* Imagen del paso */
+.step-image {
+    margin: 25px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.step-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Tips del paso */
+.step-tips {
+    background: #FFF9E6;
+    border-left: 4px solid #FFBF00;
+    padding: 15px 20px;
+    margin-top: 20px;
+    border-radius: 4px;
+}
+
+.step-tips p {
+    margin: 0;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.step-tips strong {
+    color: #FFBF00;
+}
+
+/* Sección de Preguntas Frecuentes */
+.faq-section {
+    max-width: 900px;
+    margin: 80px auto 60px;
+    padding: 50px 40px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.faq-title {
+    text-align: center;
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 40px;
+    font-weight: 600;
+}
+
+.faq-item {
+    background: white;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.faq-item h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.faq-item p {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Call to Action */
+.guia-cta {
+    text-align: center;
+    margin: 60px auto;
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #FFBF00 0%, #FFD966 100%);
+    border-radius: 12px;
+    max-width: 700px;
+}
+
+.guia-cta h3 {
+    font-size: 28px;
+    color: white;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.btn-large {
+    padding: 18px 50px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Responsive - Tablets */
+@media (max-width: 768px) {
+    .guia-step {
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 60px;
+    }
+
+    .guia-step:not(:last-child)::after {
+        left: 35px;
+        top: 80px;
+        bottom: -60px;
+    }
+
+    .step-number {
+        width: 60px;
+        height: 60px;
+    }
+
+    .step-number span {
+        font-size: 28px;
+    }
+
+    .step-title {
+        font-size: 24px;
+    }
+
+    .step-description {
+        font-size: 15px;
+    }
+
+    .faq-section {
+        padding: 30px 20px;
+        margin: 60px auto 40px;
+    }
+
+    .faq-title {
+        font-size: 28px;
+    }
+
+    .guia-cta {
+        padding: 40px 20px;
+        margin: 40px auto;
+    }
+
+    .guia-cta h3 {
+        font-size: 24px;
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+    .guia-header {
+        padding: 30px 15px;
+        margin-bottom: 40px;
+    }
+
+    .guia-intro {
+        font-size: 16px;
+    }
+
+    .step-number {
+        width: 50px;
+        height: 50px;
+    }
+
+    .step-number span {
+        font-size: 24px;
+    }
+
+    .step-title {
+        font-size: 20px;
+    }
+
+    .step-description {
+        font-size: 14px;
+    }
+
+    .step-tips {
+        padding: 12px 15px;
+    }
+
+    .step-tips p {
+        font-size: 14px;
+    }
+
+    .faq-section {
+        padding: 25px 15px;
+    }
+
+    .faq-title {
+        font-size: 24px;
+    }
+
+    .faq-item {
+        padding: 20px;
+    }
+
+    .faq-item h3 {
+        font-size: 16px;
+    }
+
+    .faq-item p {
+        font-size: 14px;
+    }
+
+    .guia-cta {
+        padding: 30px 15px;
+    }
+
+    .guia-cta h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .btn-large {
+        padding: 15px 35px;
+        font-size: 16px;
+        width: 100%;
+    }
+}
