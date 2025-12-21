@@ -49,6 +49,25 @@
       <p>Precio</p>
       <input type="number" id="precio" step="0.01">
 
+        <p>¿Vende por kilo / bolsa?</p>
+  <div class="checkbox-group">
+    <label>
+      <input type="checkbox" id="tieneKilo">
+      Vender por kilo
+    </label>
+    <label>
+      <input type="checkbox" id="tieneBolsa">
+      Vender por bolsa
+    </label>
+  </div>
+
+  <p>Precio por kilo</p>
+  <input type="number" id="precioKilo" step="0.01">
+
+  <p>Precio por bolsa</p>
+  <input type="number" id="precioBolsa" step="0.01">
+
+
       <!-- Input para subir archivo -->
       <p>Subir Imagen (Archivo)</p>
       <input type="file" id="archivoImagen" accept="image/*">
@@ -507,24 +526,46 @@ window.eliminarCategoria = async function(nombreCategoria) {
     const imagenUrl = document.getElementById("imagenUrl").value;
     const destacado = document.getElementById("destacado").checked;
     const oferta = document.getElementById("oferta").checked;
+    const tieneKilo = document.getElementById("tieneKilo").checked;
+    const tieneBolsa = document.getElementById("tieneBolsa").checked;
+    const precioKilo = document.getElementById("precioKilo").value;
+    const precioBolsa = document.getElementById("precioBolsa").value;
+
 
     const imagenFinal = uploadedImageUrl || imagenUrl;
 
-    if(!nombre || !precio ) {
-      return alert("Completa los campos del producto");
+    // VALIDACIÓN
+    if (!nombre) {
+      return alert("Completa el nombre del producto");
     }
+
+    // Si NO vende por kilo/bolsa → precio normal obligatorio
+    if (!tieneKilo && !tieneBolsa && !precio) {
+      return alert("Completa el precio del producto");
+    }
+
+    // Si vende por kilo/bolsa → al menos un precio de esos
+    if ((tieneKilo || tieneBolsa) && !precio && !precioKilo && !precioBolsa) {
+      return alert("Completa al menos un precio por kilo o por bolsa");
+    }
+
 
  
 
     try {
-      const productoData = {
+            const productoData = {
         nombre,
         categoria: categoria || "SIN CATEGORÍA",
         precio: Number(precio),
         imagen: imagenFinal,
         destacado: destacado === true,
-        oferta: oferta === true
+        oferta: oferta === true,
+        tieneKilo: tieneKilo === true,
+        tieneBolsa: tieneBolsa === true,
+        precioKilo: precioKilo ? Number(precioKilo) : null,
+        precioBolsa: precioBolsa ? Number(precioBolsa) : null
       };
+
 
       if(productoId) {
         const docRef = doc(db, "productos", productoId);
@@ -722,6 +763,11 @@ window.eliminarCategoria = async function(nombreCategoria) {
     document.getElementById("imagenUrl").value = producto.imagen || '';
     document.getElementById("destacado").checked = producto.destacado === true;
     document.getElementById("oferta").checked = producto.oferta === true;
+    document.getElementById("tieneKilo").checked = producto.tieneKilo === true;
+    document.getElementById("tieneBolsa").checked = producto.tieneBolsa === true;
+    document.getElementById("precioKilo").value = producto.precioKilo || '';
+    document.getElementById("precioBolsa").value = producto.precioBolsa || '';
+
 
     const previewImg = document.getElementById("previewImg");
     if(producto.imagen) {
@@ -747,6 +793,11 @@ window.eliminarCategoria = async function(nombreCategoria) {
     document.getElementById("oferta").checked = false;
     document.getElementById("archivoImagen").value = "";
     uploadedImageUrl = null;
+        document.getElementById("tieneKilo").checked = false;
+    document.getElementById("tieneBolsa").checked = false;
+    document.getElementById("precioKilo").value = "";
+    document.getElementById("precioBolsa").value = "";
+
 
     document.getElementById("form-title").textContent = "Agregar Nuevo Producto";
     document.getElementById("btnGuardar").textContent = "Guardar Producto";
