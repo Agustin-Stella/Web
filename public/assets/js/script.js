@@ -131,29 +131,101 @@ function mostrarProductos(productos, container) {
 
     const badgeOferta = producto.oferta === true ? '<span class="product-badge">OFERTA</span>' : '';
 
-    card.innerHTML = `
-      ${badgeOferta}
-      <div class="product-image">
-        <img src="${producto.imagen || 'placeholder.jpg'}" alt="${producto.nombre || 'Producto'}">
-        <div class="product-overlay">
-          <button class="overlay-btn overlay-btn-large ${enCarrito ? 'btn-added' : ''}" onclick="verProducto('${producto.id}')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 2L6.5 6M9 2h6m-6 0L6.5 6m8.5-4l2.5 4M6.5 6h11M6.5 6L5 21h14l-1.5-15"></path>
-            </svg>
-            ${enCarrito ? 'AGREGADO' : 'AGREGAR'}
-          </button>
-        </div>
+  card.innerHTML = ` 
+  ${badgeOferta}
+  <div class="product-image">
+    <img src="${producto.imagen || 'placeholder.jpg'}" alt="${producto.nombre || 'Producto'}">
+    <div class="product-overlay">
+      <button 
+        class="overlay-btn overlay-btn-large ${enCarrito ? 'btn-added' : ''}" 
+        onclick="agregarAlCarrito('${producto.id}')"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 2L6.5 6M9 2h6m-6 0L6.5 6m8.5-4l2.5 4M6.5 6h11M6.5 6L5 21h14l-1.5-15"></path>
+        </svg>
+        ${enCarrito ? 'AGREGADO' : 'AGREGAR'}
+      </button>
+    </div>
+  </div>
+
+  <div class="product-info">
+    <h3 class="product-title">${producto.nombre || 'Sin nombre'}</h3>
+    <p class="product-category">${producto.categoria || 'Sin categoría'}</p>
+        <p class="product-price">
+      ${
+        producto.precio && producto.precio > 0
+          ? '$' + Number(producto.precio).toLocaleString('es-AR', {
+              minimumFractionDigits: 2
+            })
+          : ''
+      }
+    </p>
+
+
+    ${(producto.tieneKilo || producto.tieneBolsa) ? `
+      <div class="balanceado-box">
+        <p class="balanceado-label">${producto.categoria || 'BALANCEADO'}</p>
+        
+        ${producto.tieneKilo ? `
+          <div class="balanceado-row">
+            <span class="balanceado-text">
+              Por kilo 
+              <span class="balanceado-price">
+                ($${Number(producto.precioKilo || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })})
+              </span>
+            </span>
+            <div class="qty-control" data-tipo="kilo">
+              <button type="button" class="qty-btn qty-minus">-</button>
+              <span class="qty-value">0</span>
+              <button type="button" class="qty-btn qty-plus">+</button>
+            </div>
+          </div>
+        ` : ''}
+
+        ${producto.tieneBolsa ? `
+          <div class="balanceado-row">
+            <span class="balanceado-text">
+              Por bolsa 
+              <span class="balanceado-price">
+                ($${Number(producto.precioBolsa || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })})
+              </span>
+            </span>
+            <div class="qty-control" data-tipo="bolsa">
+              <button type="button" class="qty-btn qty-minus">-</button>
+              <span class="qty-value">0</span>
+              <button type="button" class="qty-btn qty-plus">+</button>
+            </div>
+          </div>
+        ` : ''}
       </div>
-      <div class="product-info">
-        <h3 class="product-title">${producto.nombre || 'Sin nombre'}</h3>
-        <p class="product-category">${producto.categoria || 'Sin categoría'}</p>
-        <p class="product-price">$${Number(producto.precio || 0).toLocaleString('es-AR', {minimumFractionDigits: 2})}</p>
-      </div>
-    `;
+    ` : ''}
+  </div>
+`;
+
+
 
     container.appendChild(card);
   });
 }
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.qty-btn');
+  if (!btn) return;
+
+  const control = btn.closest('.qty-control');
+  if (!control) return;
+
+  const valueSpan = control.querySelector('.qty-value');
+  let value = Number(valueSpan.textContent) || 0;
+
+  if (btn.classList.contains('qty-plus')) {
+    value++;
+  } else if (btn.classList.contains('qty-minus') && value > 0) {
+    value--;
+  }
+
+  valueSpan.textContent = value;
+});
+
 async function cargarCategorias() {
   const categoryFilter = document.getElementById("categoryFilter");
   if (!categoryFilter) return;
@@ -287,26 +359,93 @@ window.verProducto = function(id) {
 window.closeModal = function() {
   document.getElementById("productModal").classList.remove("active");
 }
-
 window.agregarAlCarrito = function(id) {
   const producto = todosLosProductos.find(p => p.id === id);
   if (!producto) return;
 
-  const existente = cart.find(item => item.id === id);
-  if (existente) {
-    existente.cantidad++;
-  } else {
-    cart.push({
-      ...producto,
-      cantidad: 1
-    });
+  // 🔹 Si NO es balanceado (no tiene kilo ni bolsa) → comportamiento viejo
+  if (!producto.tieneKilo && !producto.tieneBolsa) {
+    const existente = cart.find(item => item.id === id);
+    if (existente) {
+      existente.cantidad++;
+    } else {
+      cart.push({
+        ...producto,
+        cantidad: 1
+      });
+    }
+  }
+
+  // 🔹 Si es balanceado → solo agrego kilos / bolsas
+  if (producto.tieneKilo || producto.tieneBolsa) {
+    const cardElement = document
+      .querySelector(`.product-card button[onclick="agregarAlCarrito('${id}')"]`)
+      ?.closest('.product-card');
+
+    if (cardElement) {
+      const kiloControl  = cardElement.querySelector('.qty-control[data-tipo="kilo"]');
+      const bolsaControl = cardElement.querySelector('.qty-control[data-tipo="bolsa"]');
+
+      const qtyKilo  = kiloControl
+        ? Number(kiloControl.querySelector('.qty-value').textContent) || 0
+        : 0;
+      const qtyBolsa = bolsaControl
+        ? Number(bolsaControl.querySelector('.qty-value').textContent) || 0
+        : 0;
+
+      // KILOS
+      if (producto.tieneKilo && qtyKilo > 0) {
+        const idKilo = id + '_kilo';
+        const existenteKilo = cart.find(
+          item => item.id === idKilo && item.unidad === 'kilo'
+        );
+
+        if (existenteKilo) {
+          existenteKilo.cantidad += qtyKilo;
+        } else {
+          cart.push({
+            id: idKilo,
+            nombre: producto.nombre + ' (kilos)',
+            imagen: producto.imagen,
+            precio: Number(producto.precioKilo) || 0,
+            cantidad: qtyKilo,
+            unidad: 'kilo'
+          });
+        }
+      }
+
+      // BOLSAS
+      if (producto.tieneBolsa && qtyBolsa > 0) {
+        const idBolsa = id + '_bolsa';
+        const existenteBolsa = cart.find(
+          item => item.id === idBolsa && item.unidad === 'bolsa'
+        );
+
+        if (existenteBolsa) {
+          existenteBolsa.cantidad += qtyBolsa;
+        } else {
+          cart.push({
+            id: idBolsa,
+            nombre: producto.nombre + ' (bolsas)',
+            imagen: producto.imagen,
+            precio: Number(producto.precioBolsa) || 0,
+            cantidad: qtyBolsa,
+            unidad: 'bolsa'
+          });
+        }
+      }
+    }
   }
 
   guardarCarrito();
   actualizarBadges();
   mostrarProductos(productosFiltrados, document.getElementById("catalogGrid"));
   showToast("Producto agregado al carrito", "success");
-}
+};
+
+
+
+
 
 window.addToCartFromModal = function() {
   const modal = document.getElementById("productModal");
@@ -580,48 +719,65 @@ function mostrarOfertas() {
   
   mostrarProductos(productosEnOferta, ofertasGrid);
 }
-
 function mostrarCarrito() {
-  const emptyCart = document.getElementById("emptyCart");
-  const cartTable = document.getElementById("cartTable");
-  const cartBody = document.getElementById("cartBody");
-  const cartTotal = document.getElementById("cartTotal");
-  
+  const emptyCart  = document.getElementById("emptyCart");
+  const cartTable  = document.getElementById("cartTable");
+  const cartBody   = document.getElementById("cartBody");
+  const cartTotal  = document.getElementById("cartTotal");
+
   if (cart.length === 0) {
     emptyCart.style.display = "block";
     cartTable.style.display = "none";
-  } else {
-    emptyCart.style.display = "none";
-    cartTable.style.display = "block";
-    
     cartBody.innerHTML = "";
-    let total = 0;
-    
-    cart.forEach(item => {
-      const subtotal = (item.precio || 0) * item.cantidad;
-      total += subtotal;
-      
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td><img src="${item.imagen || 'placeholder.jpg'}" alt="${item.nombre}" class="table-image"></td>
-        <td class="table-product-name">${item.nombre || 'Sin nombre'}</td>
-        <td class="table-price">$${Number(item.precio || 0).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
-        <td>
-          <div class="quantity-input">
-            <button onclick="decreaseCartQuantity('${item.id}')">-</button>
-            <input type="number" value="${item.cantidad}" min="1" readonly>
-            <button onclick="increaseCartQuantity('${item.id}')">+</button>
-          </div>
-        </td>
-        <td class="table-price">$${Number(subtotal).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
-        <td><button class="remove-btn" onclick="removeFromCart('${item.id}')">&times;</button></td>
-      `;
-      cartBody.appendChild(row);
-    });
-    
-    cartTotal.textContent = `$${Number(total).toLocaleString('es-AR', {minimumFractionDigits: 2})}`;
+    cartTotal.textContent = "$0,00";
+    return;
   }
+
+  emptyCart.style.display = "none";
+  cartTable.style.display = "block";
+
+  cartBody.innerHTML = "";
+  let total = 0;
+
+  cart.forEach(item => {
+    const subtotal = (item.precio || 0) * item.cantidad;
+    total += subtotal;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>
+        <img src="${item.imagen || 'placeholder.jpg'}" 
+             alt="${item.nombre || ''}" 
+             class="table-image">
+      </td>
+      <td class="table-product-name">
+        ${item.nombre || 'Sin nombre'}
+        ${item.unidad ? ` <span class="cart-unit">(${item.unidad})</span>` : ''}
+      </td>
+      <td class="table-price">
+        $${Number(item.precio || 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+      </td>
+      <td>
+        <div class="quantity-input">
+          <button onclick="decreaseCartQuantity('${item.id}')">-</button>
+          <input type="number" value="${item.cantidad}" min="1" readonly>
+          <button onclick="increaseCartQuantity('${item.id}')">+</button>
+        </div>
+      </td>
+      <td class="table-price">
+        $${Number(subtotal).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+      </td>
+      <td>
+        <button class="remove-btn" onclick="removeFromCart('${item.id}')">&times;</button>
+      </td>
+    `;
+
+    cartBody.appendChild(row);
+  });
+
+  cartTotal.textContent = `$${Number(total).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
 }
+
 
 window.increaseCartQuantity = function(id) {
   const item = cart.find(p => p.id === id);
