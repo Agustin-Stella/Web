@@ -1535,6 +1535,94 @@ body {
     }
 }
 
+.balanceado-box {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+  text-align: left;
+}
+
+.balanceado-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #b8b8b8;
+  text-align: center;
+}
+
+.balanceado-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.balanceado-text {
+  font-size: 13px;
+  color: #555;
+}
+
+.balanceado-price {
+  font-weight: 600;
+  color: #777;
+}
+
+.balanceado-input {
+  width: 64px;
+  height: 30px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  text-align: center;
+  outline: none;
+  background-color: #fafafa;
+}
+
+.balanceado-input:focus {
+  border-color: #fbbf24; /* tu amarillo */
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.15);
+  background-color: #fff;
+}
+
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #444;
+}
+
+.qty-btn:first-child {
+  border-right: 1px solid #e5e5e5;
+}
+
+.qty-btn:last-child {
+  border-left: 1px solid #e5e5e5;
+}
+
+.qty-value {
+  width: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+
 /* ======================================
    PÁGINA DE GUÍA DE COMPRA
 ====================================== */
