@@ -131,14 +131,16 @@ function mostrarProductos(productos, container) {
 
     const badgeOferta = producto.oferta === true ? '<span class="product-badge">OFERTA</span>' : '';
 
-  card.innerHTML = ` 
+ card.innerHTML = ` 
   ${badgeOferta}
   <div class="product-image">
     <img src="${producto.imagen || 'placeholder.jpg'}" alt="${producto.nombre || 'Producto'}">
     <div class="product-overlay">
       <button 
         class="overlay-btn overlay-btn-large ${enCarrito ? 'btn-added' : ''}" 
-        onclick="agregarAlCarrito('${producto.id}')"
+        onclick="${(producto.tieneKilo || producto.tieneBolsa)
+          ? `agregarAlCarrito('${producto.id}')`
+          : `verProducto('${producto.id}')`}"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 2L6.5 6M9 2h6m-6 0L6.5 6m8.5-4l2.5 4M6.5 6h11M6.5 6L5 21h14l-1.5-15"></path>
@@ -151,7 +153,7 @@ function mostrarProductos(productos, container) {
   <div class="product-info">
     <h3 class="product-title">${producto.nombre || 'Sin nombre'}</h3>
     <p class="product-category">${producto.categoria || 'Sin categoría'}</p>
-        <p class="product-price">
+    <p class="product-price">
       ${
         producto.precio && producto.precio > 0
           ? '$' + Number(producto.precio).toLocaleString('es-AR', {
@@ -160,7 +162,6 @@ function mostrarProductos(productos, container) {
           : ''
       }
     </p>
-
 
     ${(producto.tieneKilo || producto.tieneBolsa) ? `
       <div class="balanceado-box">
