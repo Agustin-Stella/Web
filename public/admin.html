@@ -30,6 +30,7 @@
     <button class="tab-btn active" onclick="cambiarTab('cargar')">Cargar Producto</button>
     <button class="tab-btn" onclick="cambiarTab('gestionar')">Gestionar Productos</button>
     <button class="tab-btn" onclick="cambiarTab('categorias')">Gestionar Categorías</button>
+    <button class="tab-btn" onclick="cambiarTab('balanceados')">Actualizar Balanceados</button>
   </div>
   
   <!-- TAB: CARGAR PRODUCTO -->
@@ -156,6 +157,58 @@
           </div>
           <div id="listaCategorias" class="categorias-grid"></div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: ACTUALIZAR BALANCEADOS -->
+  <div id="tab-balanceados" class="tab-content">
+    <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+      <h3>Actualización Masiva de Balanceados</h3>
+      <p style="color: #666; margin-bottom: 20px;">
+        Este proceso va a actualizar automáticamente los productos de balanceado con el sistema de venta por kilo/bolsa,
+        consolidando duplicados y eliminando productos redundantes.
+      </p>
+
+      <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <strong>⚠️ Importante:</strong>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+          <li>Esta acción modificará múltiples productos</li>
+          <li>Eliminará productos duplicados</li>
+          <li>El proceso es irreversible</li>
+          <li>Se recomienda hacer un backup antes</li>
+        </ul>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <h4>Productos que se van a actualizar:</h4>
+        <ul style="line-height: 1.8; color: #333;">
+          <li>Sieger criadores → Kilo: $4.600 | Bolsa: $80.000</li>
+          <li>Performance adulto → Kilo: $4.800 | Bolsa: $84.000</li>
+          <li>Kenl adulto → Kilo: $3.000 | Bolsa: $60.000</li>
+          <li>Deleita → Solo kilo: $2.800</li>
+          <li>Dog selection → Kilo: $2.400 | Bolsa: $42.000</li>
+          <li>Jaspe adulto → Solo kilo: $1.900</li>
+          <li>Gaucho adulto → Solo kilo: $1.500</li>
+          <li>Super eco → Kilo: $1.000 | Bolsa: $17.000</li>
+          <li>Evolution mordida pequeña → Solo kilo: $2.800</li>
+          <li>Sieger mordida pequeña → Solo kilo: $6.000</li>
+          <li>Kenl mordida pequeña → Solo kilo: $3.600</li>
+        </ul>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <button
+          onclick="ejecutarActualizacionBalanceados()"
+          style="background: #28a745; color: white; padding: 15px 40px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;"
+          id="btnActualizarBalanceados"
+        >
+          🚀 Ejecutar Actualización
+        </button>
+      </div>
+
+      <div id="logBalanceados" style="margin-top: 30px; background: #f8f9fa; padding: 20px; border-radius: 8px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 13px; line-height: 1.6; display: none;">
+        <!-- Los logs aparecerán aquí -->
       </div>
     </div>
   </div>
@@ -802,6 +855,233 @@ window.eliminarCategoria = async function(nombreCategoria) {
     document.getElementById("form-title").textContent = "Agregar Nuevo Producto";
     document.getElementById("btnGuardar").textContent = "Guardar Producto";
     document.getElementById("btnCancelar").style.display = "none";
+  }
+
+  // ========================================
+  // ACTUALIZACIÓN MASIVA DE BALANCEADOS
+  // ========================================
+  window.ejecutarActualizacionBalanceados = async function() {
+    if(!isAuthenticated) {
+      alert("Debes estar autenticado");
+      return;
+    }
+
+    const confirmacion = confirm(
+      "⚠️ ATENCIÓN\n\n" +
+      "Este proceso va a:\n" +
+      "- Actualizar múltiples productos\n" +
+      "- Eliminar productos duplicados\n" +
+      "- Modificar precios y configuraciones\n\n" +
+      "Esta acción NO se puede deshacer.\n\n" +
+      "¿Estás seguro de continuar?"
+    );
+
+    if(!confirmacion) return;
+
+    const btn = document.getElementById("btnActualizarBalanceados");
+    const logDiv = document.getElementById("logBalanceados");
+
+    btn.disabled = true;
+    btn.textContent = "⏳ Procesando...";
+    logDiv.style.display = "block";
+    logDiv.innerHTML = "";
+
+    function log(mensaje, tipo = "info") {
+      const timestamp = new Date().toLocaleTimeString();
+      const color = tipo === "error" ? "#dc3545" : tipo === "success" ? "#28a745" : tipo === "warning" ? "#ffc107" : "#333";
+      logDiv.innerHTML += `<div style="color: ${color};">[${timestamp}] ${mensaje}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    try {
+      log("🚀 Iniciando actualización de balanceados...");
+
+      // Obtener todos los productos
+      log("📦 Cargando productos de Firestore...");
+      const querySnap = await getDocs(collection(db, "productos"));
+      const productos = [];
+
+      querySnap.forEach((docSnap) => {
+        productos.push({
+          id: docSnap.id,
+          ...docSnap.data()
+        });
+      });
+
+      log(`✅ ${productos.length} productos cargados`, "success");
+
+      // Función para buscar productos
+      function buscar(texto) {
+        const textoLower = texto.toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+        return productos.filter(p => {
+          const nombreLower = (p.nombre || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+          return nombreLower.includes(textoLower);
+        });
+      }
+
+      // Función para actualizar
+      async function actualizar(id, datos, nombreLog) {
+        try {
+          await updateDoc(doc(db, "productos", id), datos);
+          log(`✅ Actualizado: ${nombreLog}`, "success");
+          return true;
+        } catch (error) {
+          log(`❌ Error: ${nombreLog} - ${error.message}`, "error");
+          return false;
+        }
+      }
+
+      // Función para eliminar
+      async function eliminar(id, nombre) {
+        try {
+          await deleteDoc(doc(db, "productos", id));
+          log(`🗑️  Eliminado: ${nombre}`, "warning");
+          return true;
+        } catch (error) {
+          log(`❌ Error eliminando: ${nombre} - ${error.message}`, "error");
+          return false;
+        }
+      }
+
+      // Configuración de productos
+      const configs = [
+        { nombre: "sieger criadores", precioKilo: 4600, precioBolsa: 80000 },
+        { nombre: "performance adulto", precioKilo: 4800, precioBolsa: 84000 },
+        { nombre: "kenl adulto", precioKilo: 3000, precioBolsa: 60000 },
+        { nombre: "deleita", precioKilo: 2800, soloKilo: true },
+        { nombre: "dog selection", precioKilo: 2400, precioBolsa: 42000 },
+        { nombre: "jaspe adulto", precioKilo: 1900, soloKilo: true },
+        { nombre: "gaucho adulto", precioKilo: 1500, soloKilo: true },
+        { nombre: "super eco", precioKilo: 1000, precioBolsa: 17000 },
+        { nombre: "evolution mordida pequeña", precioKilo: 2800, soloKilo: true },
+        { nombre: "sieger mordida pequeña", precioKilo: 6000, soloKilo: true },
+        { nombre: "kenl mordida pequeña", precioKilo: 3600, soloKilo: true }
+      ];
+
+      log("\n🔄 Procesando productos...");
+
+      // Procesar cada configuración
+      for (const cfg of configs) {
+        log(`\n📝 Buscando: "${cfg.nombre}"`);
+        const encontrados = buscar(cfg.nombre);
+
+        if (encontrados.length === 0) {
+          log(`   ⚠️  No encontrado`, "warning");
+          continue;
+        }
+
+        log(`   ✓ Encontrados: ${encontrados.length}`);
+
+        // Determinar principal
+        let principal = encontrados.find(p => {
+          const n = p.nombre.toLowerCase();
+          return (n.includes("xkg") || n.includes("x kg")) && !n.match(/x\s*\d+\s*kg/);
+        }) || encontrados[0];
+
+        const duplicados = encontrados.filter(p => p.id !== principal.id);
+
+        // Actualizar principal
+        const datosUpdate = {
+          precio: cfg.precioKilo,
+          tieneKilo: true,
+          tieneBolsa: cfg.soloKilo ? false : true,
+          precioKilo: cfg.precioKilo,
+          precioBolsa: cfg.soloKilo ? null : cfg.precioBolsa
+        };
+
+        log(`   ✨ Principal → ${principal.nombre}`);
+        await actualizar(principal.id, datosUpdate, principal.nombre);
+
+        // Eliminar duplicados
+        if (duplicados.length > 0) {
+          log(`   🗑️  Duplicados a eliminar: ${duplicados.length}`);
+          for (const dup of duplicados) {
+            await eliminar(dup.id, dup.nombre);
+          }
+        }
+      }
+
+      // Casos especiales
+      log("\n🔧 CASOS ESPECIALES");
+
+      // KENL CACHORRO 15KG
+      log("\n📝 KENL CACHORRO 15KG");
+      const kenlCachorro15 = productos.find(p => {
+        const n = p.nombre.toLowerCase();
+        return n.includes("kenl") && n.includes("cachorro") && (n.includes("15") || n.includes("x15"));
+      });
+
+      if (kenlCachorro15) {
+        log(`   Encontrado: ${kenlCachorro15.nombre}`);
+        await eliminar(kenlCachorro15.id, kenlCachorro15.nombre);
+      } else {
+        log("   ⚠️  No encontrado (puede que ya esté eliminado)", "warning");
+      }
+
+      // GAUCHO CACHORRO
+      log("\n📝 GAUCHO CACHORRO (consolidar duplicados)");
+      const gauchoCachorro = buscar("gaucho cachorro");
+
+      if (gauchoCachorro.length > 1) {
+        log(`   Encontrados: ${gauchoCachorro.length}`);
+
+        const principal = gauchoCachorro.find(p => {
+          const n = p.nombre.toLowerCase();
+          return (n.includes("xkg") || n.includes("x kg")) && !n.match(/x\s*\d+\s*kg/);
+        }) || gauchoCachorro[0];
+
+        const duplicados = gauchoCachorro.filter(p => p.id !== principal.id);
+        const precio = principal.precio || 2000;
+
+        const datosUpdate = {
+          precio: precio,
+          tieneKilo: true,
+          tieneBolsa: false,
+          precioKilo: precio,
+          precioBolsa: null
+        };
+
+        log(`   ✨ Principal → ${principal.nombre}`);
+        await actualizar(principal.id, datosUpdate, principal.nombre);
+
+        if (duplicados.length > 0) {
+          log(`   🗑️  Eliminando duplicados: ${duplicados.length}`);
+          for (const dup of duplicados) {
+            await eliminar(dup.id, dup.nombre);
+          }
+        }
+      } else if (gauchoCachorro.length === 1) {
+        log(`   ✓ Solo hay 1, no hay duplicados`);
+      }
+
+      log("\n✨ ¡ACTUALIZACIÓN COMPLETADA!", "success");
+      log("🔄 Recargando productos...");
+
+      await cargarProductos();
+
+      btn.textContent = "✅ Completado";
+      btn.style.background = "#28a745";
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = "🚀 Ejecutar Actualización";
+        btn.style.background = "#28a745";
+      }, 3000);
+
+    } catch (error) {
+      log(`❌ ERROR GENERAL: ${error.message}`, "error");
+      console.error(error);
+
+      btn.disabled = false;
+      btn.textContent = "❌ Error - Reintentar";
+      btn.style.background = "#dc3545";
+    }
   }
 </script>
 
