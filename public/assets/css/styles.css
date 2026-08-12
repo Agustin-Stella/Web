@@ -273,7 +273,7 @@ body {
 .filter-section h3 {
     font-size: 18px;
     margin-bottom: 15px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .filter-section select {
@@ -282,6 +282,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
     background: white;
 }
@@ -1222,7 +1223,8 @@ body {
     }
 
     .nav-link {
-        font-size: 14px;
+        font-size: 17px;
+        font-weight: 700;
     }
 
     .catalog-layout {
@@ -1231,6 +1233,11 @@ body {
 
     .sidebar {
         position: static;
+    }
+
+    .filter-section select {
+        padding: 18px 10px;
+        font-size: 16px;
     }
 
     .products-grid {
@@ -1320,7 +1327,8 @@ body {
     }
 
     .nav-link {
-        font-size: 13px;
+        font-size: 16px;
+        font-weight: 700;
     }
 
     .header-icons {
