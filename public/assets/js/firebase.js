@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
 
 import firebaseConfig from "./firebase-config.js";
 
@@ -10,6 +11,7 @@ import firebaseConfig from "./firebase-config.js";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
 
 let analytics;
 try {
@@ -18,4 +20,4 @@ try {
   console.warn("Firebase Analytics no inicializado:", e.message || e);
 }
 
-export { app, analytics, db, storage };
+export { app, analytics, db, storage, auth };
