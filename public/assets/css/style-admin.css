@@ -412,6 +412,34 @@ h2 {
     transform: translateY(-2px);
 }
 
+.btn-exportar-kalia {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-exportar-kalia:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-exportar-kalia:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.exportar-kalia-estado {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
 /* GESTIÓN DE CATEGORÍAS */
 .categorias-container {
     display: grid;

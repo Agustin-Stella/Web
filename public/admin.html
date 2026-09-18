@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="assets/css/style-admin.css">
   <title>Panel Admin</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -108,12 +109,19 @@
 
   <!-- Barra de búsqueda -->
   <div style="margin: 15px 0; text-align:center;">
-    <input 
-      type="text" 
-      id="buscadorProductos" 
-      placeholder="Buscar productos por nombre..." 
+    <input
+      type="text"
+      id="buscadorProductos"
+      placeholder="Buscar productos por nombre..."
       style="max-width:400px;width:100%;padding:8px 12px;border-radius:8px;border:1px solid #ddd;"
     >
+  </div>
+
+  <div style="margin: 0 0 20px; text-align:center;">
+    <button id="btnExportarKalia" class="btn-exportar-kalia" onclick="exportarKalia()">
+      Exportar para KalIA
+    </button>
+    <div id="exportarKaliaEstado" class="exportar-kalia-estado"></div>
   </div>
 
   <div id="productosLista"></div>
@@ -186,12 +194,33 @@
     onAuthStateChanged,
     signOut
   } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  import { planificarExportacionKalia, filaAArray, KALIA_COLUMNAS } from "./assets/js/kalia-export.js";
 
   let productos = [];
   let productosFiltrados = [];
   let categorias = [];
   let isAuthenticated = false;
   let uploadedImageUrl = null;
+
+  // Escapa texto para insertarlo como contenido/atributo HTML sin riesgo de XSS
+  function escapeHtml(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // Escapa texto para insertarlo dentro de un string JS de comillas simples
+  // (usado en atributos onclick="fn('...')")
+  function escapeJsString(str) {
+    return String(str ?? '')
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '');
+  }
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -447,8 +476,8 @@ async function uploadImageToStorage(file) {
         const catDiv = document.createElement("div");
         catDiv.className = "categoria-item";
         catDiv.innerHTML = `
-          <span class="categoria-nombre">${categoria}</span>
-          <button onclick="eliminarCategoria('${categoria}')" class="btn-eliminar-categoria">
+          <span class="categoria-nombre">${escapeHtml(categoria)}</span>
+          <button onclick="eliminarCategoria('${escapeJsString(categoria)}')" class="btn-eliminar-categoria">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
             </svg>
@@ -633,9 +662,9 @@ window.eliminarCategoria = async function(nombreCategoria) {
     if(producto.oferta === true) card.classList.add("oferta");
 
     card.innerHTML = `
-      <img src="${producto.imagen}" alt="${producto.nombre}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Imagen'">
-      <h3>${producto.nombre}</h3>
-      <p style="font-size: 12px; color: #666;">${producto.categoria || 'Sin categoría'}</p>
+      <img src="${escapeHtml(producto.imagen)}" alt="${escapeHtml(producto.nombre)}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Imagen'">
+      <h3>${escapeHtml(producto.nombre)}</h3>
+      <p style="font-size: 12px; color: #666;">${escapeHtml(producto.categoria) || 'Sin categoría'}</p>
       <p class="precio">$${Number(producto.precio).toLocaleString('es-AR', {minimumFractionDigits: 2})}</p>
       <div class="badges">
         ${producto.destacado === true ? '<span class="badge destacado">DESTACADO</span>' : ''}
@@ -650,7 +679,7 @@ window.eliminarCategoria = async function(nombreCategoria) {
       <button class="btn-editar" onclick="editarProducto('${producto.id}')">
         Editar
       </button>
-      <button class="btn-quitar" onclick="eliminarProducto('${producto.id}', '${producto.nombre}')">
+      <button class="btn-quitar" onclick="eliminarProducto('${producto.id}', '${escapeJsString(producto.nombre)}')">
         Eliminar
       </button>
     `;
@@ -702,9 +731,9 @@ window.eliminarCategoria = async function(nombreCategoria) {
         if(producto.oferta === true) card.classList.add("oferta");
         
         card.innerHTML = `
-          <img src="${producto.imagen}" alt="${producto.nombre}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Imagen'">
-          <h3>${producto.nombre}</h3>
-          <p style="font-size: 12px; color: #666;">${producto.categoria || 'Sin categoría'}</p>
+          <img src="${escapeHtml(producto.imagen)}" alt="${escapeHtml(producto.nombre)}" onerror="this.src='https://via.placeholder.com/150?text=Sin+Imagen'">
+          <h3>${escapeHtml(producto.nombre)}</h3>
+          <p style="font-size: 12px; color: #666;">${escapeHtml(producto.categoria) || 'Sin categoría'}</p>
           <p class="precio">$${Number(producto.precio).toLocaleString('es-AR', {minimumFractionDigits: 2})}</p>
           <div class="badges">
             ${producto.destacado === true ? '<span class="badge destacado">DESTACADO</span>' : ''}
@@ -719,7 +748,7 @@ window.eliminarCategoria = async function(nombreCategoria) {
           <button class="btn-editar" onclick="editarProducto('${producto.id}')">
               Editar
           </button>
-          <button class="btn-quitar" onclick="eliminarProducto('${producto.id}', '${producto.nombre}')">
+          <button class="btn-quitar" onclick="eliminarProducto('${producto.id}', '${escapeJsString(producto.nombre)}')">
             Eliminar
           </button>
         `;
@@ -775,6 +804,59 @@ window.eliminarCategoria = async function(nombreCategoria) {
       cargarProductos();
     } catch(error) {
       alert("Error al eliminar: " + error.message);
+    }
+  }
+
+  window.exportarKalia = async function() {
+    if(!isAuthenticated) return alert("Debes estar autenticado");
+
+    const btn = document.getElementById("btnExportarKalia");
+    const estadoDiv = document.getElementById("exportarKaliaEstado");
+
+    if (typeof XLSX === "undefined") {
+      alert("No se pudo cargar la librería de Excel. Recargá la página e intentá de nuevo.");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Exportando...";
+    estadoDiv.textContent = "";
+
+    try {
+      const querySnap = await getDocs(collection(db, "productos"));
+      const productosParaExportar = [];
+      querySnap.forEach((doc) => productosParaExportar.push({ id: doc.id, ...doc.data() }));
+
+      const plan = planificarExportacionKalia(productosParaExportar);
+
+      if (plan.archivos.length === 0) {
+        estadoDiv.textContent = "No hay productos exportables (revisá nombres y precios cargados).";
+        return;
+      }
+
+      plan.archivos.forEach((archivo) => {
+        const filasAoa = [KALIA_COLUMNAS, ...archivo.filas.map(filaAArray)];
+        const hoja = XLSX.utils.aoa_to_sheet(filasAoa);
+        const libro = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(libro, hoja, "Productos");
+        XLSX.writeFile(libro, archivo.nombre);
+      });
+
+      let mensaje = `Listo: ${plan.totalFilas} producto(s) exportado(s) en ${plan.archivos.length} archivo(s).`;
+      if (plan.omitidos > 0) {
+        mensaje += ` ${plan.omitidos} producto(s) omitido(s) por falta de nombre o precio válido.`;
+      }
+      if (plan.duplicados.length > 0) {
+        mensaje += ` ${plan.duplicados.length} código(s) de barras duplicado(s) se dejaron vacíos (ver consola).`;
+        console.warn("Códigos de barras duplicados detectados en la exportación a KalIA:", plan.duplicados);
+      }
+      estadoDiv.textContent = mensaje;
+    } catch (error) {
+      console.error(error);
+      alert("Error al exportar: " + error.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Exportar para KalIA";
     }
   }
 
